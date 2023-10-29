@@ -28,7 +28,7 @@ export const AuthProvider = ({ children }) => {
     setUser(false);
     // console.log(user);
     // localStorage.setItem("user", null)
-    navigate("/");
+    // navigate("/");
   };
 
   const defaultLogin = async () => {
