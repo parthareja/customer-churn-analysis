@@ -30,7 +30,7 @@ function Copyright(props) {
       align="center"
       {...props}
     >
-      {"Capstone I — financial-fraud-detection — 2023"}
+      {"Capstone II — Customer Churn Analysis - 2023"}
       {/* <Link color="inherit" href="https://mui.com/"> */}
 
       {/* </Link>{" - "} */}

@@ -19,7 +19,7 @@ const GLoginPage = () => {
         className="flex w-1/4 p-4"
       >
         <div style={{ position: "absolute", top: "40%", alignSelf: "center" }}>
-          Financial-Fraud-Detection
+          Customer Churn Analysis
         </div>
         <div style={{ position: "absolute", top: "50%" }}>
           <Login />

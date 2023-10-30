@@ -72,11 +72,11 @@ function SideBar(props) {
     <div className="flex flex-col bg-neutral-900  w-80 text-white">
       <div className="flex items-center gap-2 px-2 py-3">
         <FcMoneyTransfer fontSize={26} />
-        <span className="text-neutral-100 text-lg">Fraud Detection</span>
+        <span className="text-neutral-100 text-lg">Churn Analysis</span>
       </div>
 
       <div className="flex px-4 py-3 gap-0.5 pt-1 border-b border-neutral-700">
-        <span>Your Transactions:</span>
+        <span>Previous Records:</span>
       </div>
 
       <div className="flex-1 flex flex-col text-left pt-2 px-3 gap-0.5 text-neutral-400 overflow-auto">
