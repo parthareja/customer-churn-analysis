@@ -128,8 +128,8 @@ function SideBar(props) {
 function SideBarItems({ item, setModalShow, setModalData }) {
   const handleClick = (item) => {
     // console.log(item);
-    setModalData(item);
-    setModalShow(true);
+    // setModalData(item);
+    // setModalShow(true);
   };
   if (item.type_CASH_OUT === true) {
     // item.type_CASH_OUT = true;
