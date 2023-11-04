@@ -9,14 +9,12 @@ pipeline {
         stage('Build') { 
             steps {
 		dir("client-side"){
-			sh 'pwd'
-			sh 'cd client-side'
+			sh 'pwd'	
 			sh 'npm install'
 		}
 
 		dir("server-side"){
 			sh 'pwd'
-			sh 'cd server-side'
 			sh 'npm install'
 		}
             }
