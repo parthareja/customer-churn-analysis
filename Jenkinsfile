@@ -8,7 +8,10 @@ pipeline {
     stages {
         stage('Build') { 
             steps {
-                sh 'npm install' 
+		sh 'cd client-side',
+                sh 'npm install',
+		sh 'cd ../server-side',
+		sh 'npm install' 
             }
         }
     }
