@@ -10,12 +10,13 @@ pipeline {
             steps {
 		dir("client-side"){
 			sh 'pwd'	
-			sh 'npm install -g yarn'
+			sh 'npm install yarn'
 			sh 'yarn install'
 		}
 
 		dir("server-side"){
 			sh 'pwd'
+			sh 'npm install yarn'	
 			sh 'yarn install'
 		}
             }
