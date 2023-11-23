@@ -8,15 +8,14 @@ pipeline {
     stages {
         stage('Build') { 
             steps {
+		sh ' npm install -g --unsafe-perm yarn'
 		dir("client-side"){
 			sh 'pwd'	
-			sh 'npm install yarn'
 			sh 'yarn install'
 		}
 
 		dir("server-side"){
-			sh 'pwd'
-			sh 'npm install yarn'	
+			sh 'pwd'	
 			sh 'yarn install'
 		}
             }
