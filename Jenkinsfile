@@ -20,9 +20,12 @@ pipeline {
             }
         }
 	stage('Test') {
-	    steps {
-		sh './scripts/test.sh'		
-	    }
+                 steps {
+                     dir("customer-churn-analysis"){
+                         sh 'pwd'
+                         sh './scripts/test.sh'		
+                     }
+                 }
 	}
     }
 }
