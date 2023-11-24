@@ -21,7 +21,7 @@ pipeline {
         }
 	stage('Test') {
                  steps {
-                     dir("customer-churn-analysis"){
+                     dir("client-side"){
                          sh 'pwd'
                          sh './scripts/test.sh'		
                      }
