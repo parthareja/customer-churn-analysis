@@ -4,6 +4,9 @@ fraud-detection-syn-dataset.csv
 .env
 # See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
 
+# Python venv
+/ml/.venv
+
 # dependencies
 /*package-lock.json
 node_modules
