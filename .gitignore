@@ -2,6 +2,7 @@ test.py
 node_modules
 fraud-detection-syn-dataset.csv
 .env
+env
 # See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
 
 # Python venv
