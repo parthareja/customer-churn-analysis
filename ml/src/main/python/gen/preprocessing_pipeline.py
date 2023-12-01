@@ -55,7 +55,7 @@ threshold_dimensionality = 200
 # HANDLE HIGH DIMENSIONALITY
 
 if len(data.columns) > threshold_dimensionality:
-    feature_names = [f"Feature_{i}" for i in range(X.shape[1])] 
+    feature_names = [f"Feature_{i}" for i in range(data.shape[1])] 
 
     rf = RandomForestClassifier()
     rf.fit(data_train, y_train)
