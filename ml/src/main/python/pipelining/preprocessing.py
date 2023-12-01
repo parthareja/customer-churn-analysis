@@ -16,7 +16,8 @@ TARGET_COLUMN = "Churn Value"
 
 class Preprocessing:
     def __init__(self) -> None:
-        self.dataset = pd.read_excel(DATASET_PATH)
+        # self.dataset = pd.read_excel(DATASET_PATH)
+        return
 
     @staticmethod
     def dtypes_transformation(dataset):
@@ -31,7 +32,7 @@ class Preprocessing:
         return dataset
 
     @staticmethod
-    def data_trainsformation(dataset):
+    def data_transformation(dataset):
         dataset["Churn Label"].replace({"Yes": 1, "No": 0}, inplace=True)
         dataset.drop(index=dataset[dataset["Total Charges"] == " "].index, inplace=True)
         for column in dataset.columns:
@@ -68,6 +69,11 @@ class Preprocessing:
         )
         return train_df, validation_df
 
+    @staticmethod
+    def one_hot_encoder(dataset):
+        dataset = pd.get_dummies(dataset, drop_first=True, dtype=int)
+        return dataset
+
     def preprocessing_pipeline(self):
         dtypes_transformer = preprocessing.FunctionTransformer(
             Preprocessing.dtypes_transformation
@@ -76,7 +82,7 @@ class Preprocessing:
             Preprocessing.remove_null
         )
         data_transformer = preprocessing.FunctionTransformer(
-            Preprocessing.data_trainsformation
+            Preprocessing.data_transformation
         )
         feature_selector = preprocessing.FunctionTransformer(
             Preprocessing.feature_selection
@@ -84,12 +90,16 @@ class Preprocessing:
         train_val_splitter = preprocessing.FunctionTransformer(
             Preprocessing.train_val_split
         )
+        one_hot_encode_tranformer = preprocessing.FunctionTransformer(
+            Preprocessing.one_hot_encoder
+        )
         preprocessing_pipeline = Pipeline(
             [
                 ("null_remover", remove_null_tranformer),
                 ("data_type_transformation", dtypes_transformer),
                 ("data_transformation", data_transformer),
                 ("feature_selector", feature_selector),
+                ("one_hot_encoder", one_hot_encode_tranformer),
                 ("train_val_splitter", train_val_splitter),
             ]
         )
@@ -97,7 +107,6 @@ class Preprocessing:
         return preprocessing_pipeline
 
 
-# df = pd.read_excel(DATASET_PATH)
 # p = Preprocessing()
 # pipel = p.preprocessing_pipeline()
 # # (pipel.fit(df))
