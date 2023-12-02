@@ -61,7 +61,9 @@ class ModelTraining(Preprocessing):
         if self.model_exists and self.incremental_data_exists == False:
             return
 
-        elif self.model_exists == False:
+        elif self.model_exists == False or (
+            self.model_exists and self.incremental_data_exists
+        ):
             prepocess_pipeline = super().preprocessing_pipeline()
             train_df, validation_df = prepocess_pipeline.transform(self.dataset)
             x_train = train_df.drop(columns=[TARGET_COLUMN])
@@ -108,12 +110,6 @@ class ModelTraining(Preprocessing):
             print("Total model training time in minutes: ", total_training_time / 60)
 
             return xgb_best, cls_report
-
-        elif self.model_exists and self.incremental_data_exists:
-            # code to be written
-            dbfile = open(MODELS_DIR_PATH / "model.pickle", "rb")
-            db = pickle.load(dbfile)
-            print(db["cls_report"])
 
 
 # model = ModelTraining()
