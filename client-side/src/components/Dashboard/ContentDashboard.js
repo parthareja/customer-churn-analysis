@@ -104,97 +104,32 @@ function ContentDashboard(props) {
 
   const handleSubmit = async (e) => {
     
-    // console.log("transaction amount > ", transactionAmount);
     e.preventDefault();
     const reader = new FileReader();
-
-    Papa.parse(document.getElementById("csv").files[0], {
-      header:true,
-      complete: function(results) {
-          console.log("Finished:", results.meta.fields);
-      }
-    });
+    var file = document.getElementById("excel").files[0]
     
-    // if (validateForm()) {
-    //   console.log("here2VALID");
-    //   // console.log("on submit entry amount value > ", transactionAmount.current);
-    //   setErrMessage("");
-    //   e.preventDefault();
-      // datajson.current = {
-      //   user_id: user._id,
-      //   amount: transactionAmount.current,
-      //   oldbalanceOrg: oldBalanceOrig.current,
-      //   newbalanceOrg: newBalanceOrig.current,
-      //   origBalance_inacc:
-      //     oldBalanceOrig.current -
-      //     transactionAmount.current -
-      //     newBalanceOrig.current,
-      //   oldbalanceDest: oldBalanceDest.current,
-      //   newbalanceDest: newBalanceDest.current,
-      //   destBalance_inacc:
-      //     oldBalanceDest.current +
-      //     transactionAmount.current -
-      //     newBalanceDest.current,
-      //   type_CASH_OUT: typeCashOut.current,
-      //   type_TRANSFER: typeTransfer.current,
-      //   step: TransactionTime.current,
-      // };
+    const formDataExcel = new FormData();
 
-      // setDataJson({
-      //   user_id: user._id,
-      //   amount: transactionAmount,
-      //   oldbalanceOrg: oldBalanceOrig,
-      //   newbalanceOrg: newBalanceOrig,
-      //   origBalance_inacc: oldBalanceOrig - transactionAmount - newBalanceOrig,
-      //   oldbalanceDest: oldBalanceDest,
-      //   newbalanceDest: newBalanceDest,
-      //   destBalance_inacc: oldBalanceDest + transactionAmount - newBalanceDest,
-      //   type_CASH_OUT: typeCashOut,
-      //   type_TRANSFER: typeTransfer,
-      //   step: TransactionTime,
-      //   alias: transactionAlias,
-      // });
-      // const ml_datajson_array = [
-      //   TransactionTime.current,
-      //   transactionAmount.current,
-      //   oldBalanceOrig.current,
-      //   oldBalanceDest.current,
-      //   oldBalanceOrig.current -
-      //     transactionAmount.current -
-      //     newBalanceOrig.current,
-      //   oldBalanceDest.current +
-      //     transactionAmount.current -
-      //     newBalanceDest.current,
-      //   typeCashOut.current,
-      //   typeTransfer.current,
-      // ];
+    // formDataExcel.append("layer_name", layer_name);
+    formDataExcel.append("excel_file", file);
+    console.log("uploading");
+    await axios({
+      method: "post",
+      url: "http://localhost:8080/dashboard/upload",
+      data: formDataExcel,
+      headers: {
+        "Content-Type": `multipart/form-data; boundary=${formDataExcel._boundary}`,
+      },
+    }).then((res) => {
+      console.log(res);
+    });
 
-      // console.log("datajson collection, ", datajson);
-      // console.log("ml query data collection, ", ml_datajson_array); // console.log(datajson);
-    //   const POST_ml_query = async (record) => {
-    //     const data = [record];
-    //     console.log("ml query data in POST", data);
-    //     const res = await fetch("http://127.0.0.1:5000/ml_query", {
-    //       method: "POST",
-    //       body: JSON.stringify({ data: data }),
-    //       headers: { "Content-Type": "application/json" },
-    //       credentials: "include",
-    //     })
-    //       .then((res) => res.json())
-    //       .then((res) => {
-    //         modalData.current = res[0];
-    //         // console.log("modalData ,", res[0]);
-    //         setShowResultModal(true);
-    //       });
-    //   };
-
-    //   POST_ml_query(ml_datajson_array);
-
-    //   resetFields();
-    //   setQueriesUpdate(!queriesUpdate);
-
-    //   clearForm();
-    // }
+    // Papa.parse(document.getElementById("excel").files[0], {
+    //   header:true,
+    //   complete: function(results) {
+    //       console.log("Finished:", results.meta.fields);
+    //   }
+    // });
   };
 
   // (e) =>{(e)=>{if(e.currentTarget.value= 'transfer'){setTypeCashOut(0);setTypeTransfer(1)}}}
@@ -227,7 +162,7 @@ function ContentDashboard(props) {
         )} */}
 
               <Form.Label className="mb-4">Upload Customer Dataset</Form.Label>
-              <input type ={"file"} id={"csv"} accept={".csv"} onChange={handleChange}></input>
+              <input type ={"file"} id={"excel"} accept={".xlsx"} onChange={handleChange}></input>
 
           {/* <Form.Group className="mb-3" controlId="formTransactionAlias">
             <Form.Label>Enter Alias</Form.Label>
