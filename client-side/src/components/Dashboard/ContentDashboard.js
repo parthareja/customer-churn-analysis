@@ -8,6 +8,7 @@ import Row from "react-bootstrap/Row";
 import InputGroup from "react-bootstrap/InputGroup";
 import { BsPassFill } from "react-icons/bs";
 import { useState } from "react";
+import Papa from "papaparse"
 
 import ResultModal from "./ResultModal.js";
 
@@ -23,6 +24,7 @@ function ContentDashboard(props) {
   const queriesUpdate = props.queriesUpdate;
   const setQueriesUpdate = props.setQueriesUpdate;
   const [errMessage, setErrMessage] = useState("");
+  const [file,setFile]=useState()
 
   var datajson = useRef({});
 
@@ -96,34 +98,47 @@ function ContentDashboard(props) {
     return isValid;
   };
 
+  const handleChange = async (e) => {
+    setFile(e.target.files[0])
+  }
+
   const handleSubmit = async (e) => {
-    console.log("transactino amount > ", transactionAmount);
+    
+    // console.log("transaction amount > ", transactionAmount);
     e.preventDefault();
-    console.log("here1");
-    if (validateForm()) {
-      console.log("here2VALID");
-      // console.log("on submit entry amount value > ", transactionAmount.current);
-      setErrMessage("");
-      e.preventDefault();
-      datajson.current = {
-        user_id: user._id,
-        amount: transactionAmount.current,
-        oldbalanceOrg: oldBalanceOrig.current,
-        newbalanceOrg: newBalanceOrig.current,
-        origBalance_inacc:
-          oldBalanceOrig.current -
-          transactionAmount.current -
-          newBalanceOrig.current,
-        oldbalanceDest: oldBalanceDest.current,
-        newbalanceDest: newBalanceDest.current,
-        destBalance_inacc:
-          oldBalanceDest.current +
-          transactionAmount.current -
-          newBalanceDest.current,
-        type_CASH_OUT: typeCashOut.current,
-        type_TRANSFER: typeTransfer.current,
-        step: TransactionTime.current,
-      };
+    const reader = new FileReader();
+
+    Papa.parse(document.getElementById("csv").files[0], {
+      header:true,
+      complete: function(results) {
+          console.log("Finished:", results.meta.fields);
+      }
+    });
+    
+    // if (validateForm()) {
+    //   console.log("here2VALID");
+    //   // console.log("on submit entry amount value > ", transactionAmount.current);
+    //   setErrMessage("");
+    //   e.preventDefault();
+      // datajson.current = {
+      //   user_id: user._id,
+      //   amount: transactionAmount.current,
+      //   oldbalanceOrg: oldBalanceOrig.current,
+      //   newbalanceOrg: newBalanceOrig.current,
+      //   origBalance_inacc:
+      //     oldBalanceOrig.current -
+      //     transactionAmount.current -
+      //     newBalanceOrig.current,
+      //   oldbalanceDest: oldBalanceDest.current,
+      //   newbalanceDest: newBalanceDest.current,
+      //   destBalance_inacc:
+      //     oldBalanceDest.current +
+      //     transactionAmount.current -
+      //     newBalanceDest.current,
+      //   type_CASH_OUT: typeCashOut.current,
+      //   type_TRANSFER: typeTransfer.current,
+      //   step: TransactionTime.current,
+      // };
 
       // setDataJson({
       //   user_id: user._id,
@@ -139,47 +154,47 @@ function ContentDashboard(props) {
       //   step: TransactionTime,
       //   alias: transactionAlias,
       // });
-      const ml_datajson_array = [
-        TransactionTime.current,
-        transactionAmount.current,
-        oldBalanceOrig.current,
-        oldBalanceDest.current,
-        oldBalanceOrig.current -
-          transactionAmount.current -
-          newBalanceOrig.current,
-        oldBalanceDest.current +
-          transactionAmount.current -
-          newBalanceDest.current,
-        typeCashOut.current,
-        typeTransfer.current,
-      ];
+      // const ml_datajson_array = [
+      //   TransactionTime.current,
+      //   transactionAmount.current,
+      //   oldBalanceOrig.current,
+      //   oldBalanceDest.current,
+      //   oldBalanceOrig.current -
+      //     transactionAmount.current -
+      //     newBalanceOrig.current,
+      //   oldBalanceDest.current +
+      //     transactionAmount.current -
+      //     newBalanceDest.current,
+      //   typeCashOut.current,
+      //   typeTransfer.current,
+      // ];
 
       // console.log("datajson collection, ", datajson);
       // console.log("ml query data collection, ", ml_datajson_array); // console.log(datajson);
-      const POST_ml_query = async (record) => {
-        const data = [record];
-        console.log("ml query data in POST", data);
-        const res = await fetch("http://127.0.0.1:5000/ml_query", {
-          method: "POST",
-          body: JSON.stringify({ data: data }),
-          headers: { "Content-Type": "application/json" },
-          credentials: "include",
-        })
-          .then((res) => res.json())
-          .then((res) => {
-            modalData.current = res[0];
-            // console.log("modalData ,", res[0]);
-            setShowResultModal(true);
-          });
-      };
+    //   const POST_ml_query = async (record) => {
+    //     const data = [record];
+    //     console.log("ml query data in POST", data);
+    //     const res = await fetch("http://127.0.0.1:5000/ml_query", {
+    //       method: "POST",
+    //       body: JSON.stringify({ data: data }),
+    //       headers: { "Content-Type": "application/json" },
+    //       credentials: "include",
+    //     })
+    //       .then((res) => res.json())
+    //       .then((res) => {
+    //         modalData.current = res[0];
+    //         // console.log("modalData ,", res[0]);
+    //         setShowResultModal(true);
+    //       });
+    //   };
 
-      POST_ml_query(ml_datajson_array);
+    //   POST_ml_query(ml_datajson_array);
 
-      resetFields();
-      setQueriesUpdate(!queriesUpdate);
+    //   resetFields();
+    //   setQueriesUpdate(!queriesUpdate);
 
-      clearForm();
-    }
+    //   clearForm();
+    // }
   };
 
   // (e) =>{(e)=>{if(e.currentTarget.value= 'transfer'){setTypeCashOut(0);setTypeTransfer(1)}}}
@@ -199,7 +214,7 @@ function ContentDashboard(props) {
   return (
     <div className="flex justify-center container p-4 self-center">
       <div className="w-1/2 h-full ">
-        {showResultModal && (
+        {/* {showResultModal && (
           <ResultModal
             queriesUpdate={queriesUpdate}
             setQueriesUpdate={setQueriesUpdate}
@@ -209,18 +224,10 @@ function ContentDashboard(props) {
             onHide={() => setShowResultModal(false)}
             showResultState={{ showResultModal, setShowResultModal }}
           />
-        )}
-        <Form onSubmit={handleSubmit} id="mainForm">
-          <Row className="mb-3">
-            <Form.Group controlId="formFileLg" className="mb-3">
+        )} */}
+
               <Form.Label className="mb-4">Upload Customer Dataset</Form.Label>
-              <Form.Control
-                type="file"
-                accept=".csv, .xlsx, .excel"
-                size="lg"
-              />
-            </Form.Group>
-          </Row>
+              <input type ={"file"} id={"csv"} accept={".csv"} onChange={handleChange}></input>
 
           {/* <Form.Group className="mb-3" controlId="formTransactionAlias">
             <Form.Label>Enter Alias</Form.Label>
@@ -265,10 +272,9 @@ function ContentDashboard(props) {
                     </div> */}
 
           {/* <div className="text-red-500 mb-3">{errMessage}</div> */}
-          <Button variant="primary" type="submit">
+          <Button variant="primary" type="submit" onClick={handleSubmit}>
             Submit
           </Button>
-        </Form>
       </div>
     </div>
   );
