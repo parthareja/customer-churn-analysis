@@ -8,34 +8,43 @@ from sklearn.metrics import classification_report
 from dotenv import load_dotenv
 from pathlib import Path
 import pandas as pd
+import time
+import pickle
 
 # dotenv_path = Path("/env")
 # load_dotenv(dotenv_path=dotenv_path)
 # print(os.environ.get("SEED"))
 
-BASE_DATASET_PATH = "ml\src\data\Telco_customer_churn.xlsx"
+BASE_DATASET_PATH = Path("ml\src\data\Telco_customer_churn.xlsx")
+MODELS_DIR_PATH = Path("ml\src\main\python\models")
+INCREMENTAL_DATA_PATH = Path("ml\src\data\incremental_data")
 VALIDATION_SPLIT_SIZE = 0.3
 SEED = 42
 SIGNIFICANCE_LEVEL = 0.05
 TARGET_COLUMN = "Churn Value"
+
+# In config file
+xgb_hyperparams = {
+    "max_depth": range(3, 10, 1),
+    "n_estimators": range(50, 400, 50),
+    "learning_rate": [0.1, 0.01],
+}
 
 
 class ModelTraining(Preprocessing):
     def __init__(
         self,
     ) -> None:
-        for root, dirs, files in os.walk("ml\\src\\main\\python\\models"):
+        for root, dirs, files in os.walk(MODELS_DIR_PATH):
             if len(files) > 0:
                 self.model_exists = True
             else:
                 self.model_exists = False
 
-        for root, dirs, files in os.walk("ml\\src\\data\\incremental_data"):
+        for root, dirs, files in os.walk(INCREMENTAL_DATA_PATH):
             if len(files) > 0:
                 self.incremental_data_exists = True
-                self.increment_data_file_path = (
-                    "ml\src\data\incremental_data\\" + files[0]
-                )
+                self.increment_data_file_path = INCREMENTAL_DATA_PATH / files[0]
             else:
                 self.incremental_data_exists = False
 
@@ -63,9 +72,9 @@ class ModelTraining(Preprocessing):
             xgb = XGBClassifier()
 
             xgb_hyperparams = {
-                "max_depth": range(2, 10, 1),
-                "n_estimators": range(50, 500, 50),
-                "learning_rate": [0.1, 0.01, 0.05],
+                "max_depth": range(4, 10, 2),
+                "n_estimators": range(100, 400, 100),
+                "learning_rate": [0.01],
             }
             xgb_grid_search = GridSearchCV(
                 estimator=xgb,
@@ -75,14 +84,30 @@ class ModelTraining(Preprocessing):
                 cv=10,
                 verbose=True,
             )
+            start_time = time.time()
+
             xgb_grid_search.fit(x_train, y_train)
 
             xgb_best = xgb_grid_search.best_estimator_
             xgb_best.fit(x_train, y_train)
-            return xgb_best
+
+            preds = xgb_best.predict(x_validation)
+            cls_report = classification_report(preds, y_validation)
+            print(cls_report)
+
+            pickle.dump(xgb_best, open(MODELS_DIR_PATH / "model.pickle", "wb"))
+            pickle.dump(cls_report, open(MODELS_DIR_PATH / "model.pickle", "wb"))
+
+            end_time = time.time()
+            total_training_time = end_time - start_time
+            print("Total model training time in minutes: ", total_training_time / 60)
+
+            return xgb_best, cls_report
+
+        elif self.model_exists and self.incremental_data_exists:
+            # code to be written
+            pass
 
 
-model = ModelTraining()
-xgb = model.training()
-# print(a)
-# print(b)
+# model = ModelTraining()
+# xgb, cls_report = model.training()
