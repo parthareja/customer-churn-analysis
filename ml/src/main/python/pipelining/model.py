@@ -36,13 +36,13 @@ class ModelTraining(Preprocessing):
         self,
     ) -> None:
         for root, dirs, files in os.walk(MODELS_DIR_PATH):
-            if len(files) > 0:
+            if len(files) > 1:
                 self.model_exists = True
             else:
                 self.model_exists = False
 
         for root, dirs, files in os.walk(INCREMENTAL_DATA_PATH):
-            if len(files) > 0:
+            if len(files) > 1:
                 self.incremental_data_exists = True
                 self.increment_data_file_path = INCREMENTAL_DATA_PATH / files[0]
             else:
