@@ -92,11 +92,11 @@ class ModelTraining(Preprocessing):
             xgb_best.fit(x_train, y_train)
 
             preds = xgb_best.predict(x_validation)
-            cls_report = classification_report(preds, y_validation)
+            cls_report = classification_report(preds, y_validation, output_dict=True)
             print(cls_report)
 
-            pickle.dump(xgb_best, open(MODELS_DIR_PATH / "model.pickle", "wb"))
-            pickle.dump(cls_report, open(MODELS_DIR_PATH / "model.pickle", "wb"))
+            pickel_dump = {"model": xgb_best, "cls_report": cls_report}
+            pickle.dump(pickel_dump, open(MODELS_DIR_PATH / "model.pickle", "wb"))
 
             end_time = time.time()
             total_training_time = end_time - start_time
@@ -106,8 +106,10 @@ class ModelTraining(Preprocessing):
 
         elif self.model_exists and self.incremental_data_exists:
             # code to be written
-            pass
+            dbfile = open(MODELS_DIR_PATH / "model.pickle", "rb")
+            db = pickle.load(dbfile)
+            print(db["cls_report"])
 
 
 # model = ModelTraining()
-# xgb, cls_report = model.training()
+# model.training()
