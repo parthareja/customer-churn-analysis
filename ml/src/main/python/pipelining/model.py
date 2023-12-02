@@ -15,9 +15,9 @@ import pickle
 # load_dotenv(dotenv_path=dotenv_path)
 # print(os.environ.get("SEED"))
 
-BASE_DATASET_PATH = Path("ml\src\data\Telco_customer_churn.xlsx")
-MODELS_DIR_PATH = Path("ml\src\main\python\models")
-INCREMENTAL_DATA_PATH = Path("ml\src\data\incremental_data")
+BASE_DATASET_PATH = Path("./ml/src/data/Telco_customer_churn.xlsx").as_posix()
+MODELS_DIR_PATH = Path("./ml/src/main/python/models")
+INCREMENTAL_DATA_PATH = Path("./ml/src/data/incremental_data")
 VALIDATION_SPLIT_SIZE = 0.3
 SEED = 42
 SIGNIFICANCE_LEVEL = 0.05
@@ -96,13 +96,13 @@ class ModelTraining(Preprocessing):
             preds = xgb_best.predict(x_validation)
             cls_report = classification_report(preds, y_validation, output_dict=True)
 
-            pickel_dump = {
+            pickle_dump = {
                 "model": xgb_best,
                 "cls_report": cls_report,
                 "model_train_timestamp": time.time(),
             }
             pickle.dump(
-                pickel_dump, open(MODELS_DIR_PATH / f"model_{time.time()}.pickle", "wb")
+                pickle_dump, open(MODELS_DIR_PATH / f"model_{time.time()}.pickle", "wb")
             )
 
             end_time = time.time()
@@ -112,5 +112,5 @@ class ModelTraining(Preprocessing):
             return xgb_best, cls_report
 
 
-# model = ModelTraining()
-# model.training()
+model = ModelTraining()
+model.training()
