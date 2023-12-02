@@ -61,13 +61,16 @@ class Preprocessing:
 
     @staticmethod
     def train_val_split(dataset):
-        train_df, validation_df = train_test_split(
-            dataset,
-            test_size=VALIDATION_SPLIT_SIZE,
-            random_state=SEED,
-            stratify=dataset["Churn Value"],
-        )
-        return train_df, validation_df
+        if "Churn Label" in dataset.columns:
+            train_df, validation_df = train_test_split(
+                dataset,
+                test_size=VALIDATION_SPLIT_SIZE,
+                random_state=SEED,
+                stratify=dataset["Churn Value"],
+            )
+            return train_df, validation_df
+        else:
+            return dataset
 
     @staticmethod
     def one_hot_encoder(dataset):
