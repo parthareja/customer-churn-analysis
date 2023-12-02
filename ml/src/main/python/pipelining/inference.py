@@ -52,5 +52,5 @@ class Inference(Preprocessing):
             return self.dataset, cls_report
 
 
-inf = Inference()
-inf.inference_pipeline()
+# inf = Inference()
+# inf.inference_pipeline()
