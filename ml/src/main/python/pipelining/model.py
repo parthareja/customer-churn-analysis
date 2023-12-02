@@ -36,7 +36,7 @@ class ModelTraining(Preprocessing):
             if len(files) > 1:
                 self.incremental_data_exists = True
                 self.increment_data_file_path = (
-                    Path(os.getenv("INCREMENTAL_DATA_PATH")) / files[0]
+                    Path(os.getenv("INCREMENTAL_DATA_PATH")) / files[-1]
                 )
             else:
                 self.incremental_data_exists = False
@@ -109,5 +109,5 @@ class ModelTraining(Preprocessing):
             return xgb_best, cls_report
 
 
-model = ModelTraining()
-model.training()
+# model = ModelTraining()
+# model.training()
