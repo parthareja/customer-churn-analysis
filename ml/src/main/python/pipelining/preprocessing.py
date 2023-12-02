@@ -23,13 +23,26 @@ class DropColumnTransformerInference(BaseEstimator, TransformerMixin):
             "Lat Long",
             "Country",
             "State",
+            "Churn Value",
+            "Count",
+            "City",
+            "CustomerID",
+            "Churn Reason",
+        ]
+        X = X.drop(columns=self.columns)
+        return self
+
+    def transform(self, X):
+        self.columns = [
+            "Latitude",
+            "Longitude",
+            "Lat Long",
+            "Country",
+            "State",
             "Count",
             "City",
             "CustomerID",
         ]
-        return self
-
-    def transform(self, X):
         X = X.drop(columns=self.columns)
         return X
 
@@ -206,7 +219,7 @@ class Preprocessing:
                 ("null_remover", remove_null_tranformer),
                 ("data_type_transformation", dtypes_transformer),
                 ("data_transformation", data_transformer),
-                ("feature_selector", feature_selector),
+                # ("feature_selector", feature_selector),
                 ("one_hot_encoder", one_hot_encode_tranformer),
                 ("train_val_splitter", train_val_splitter),
             ]
@@ -229,7 +242,7 @@ class Preprocessing:
                 ("null_remover", remove_null_tranformer),
                 ("data_type_transformation", dtypes_transformer),
                 ("data_transformation", data_transformer),
-                ("feature_selector", feature_selector),
+                # ("feature_selector", feature_selector),
                 ("one_hot_encoder", one_hot_encode_tranformer),
             ]
         )
