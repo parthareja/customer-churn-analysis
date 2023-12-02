@@ -93,10 +93,15 @@ class ModelTraining(Preprocessing):
 
             preds = xgb_best.predict(x_validation)
             cls_report = classification_report(preds, y_validation, output_dict=True)
-            print(cls_report)
 
-            pickel_dump = {"model": xgb_best, "cls_report": cls_report}
-            pickle.dump(pickel_dump, open(MODELS_DIR_PATH / "model.pickle", "wb"))
+            pickel_dump = {
+                "model": xgb_best,
+                "cls_report": cls_report,
+                "model_train_timestamp": time.time(),
+            }
+            pickle.dump(
+                pickel_dump, open(MODELS_DIR_PATH / f"model_{time.time()}.pickle", "wb")
+            )
 
             end_time = time.time()
             total_training_time = end_time - start_time
@@ -111,5 +116,5 @@ class ModelTraining(Preprocessing):
             print(db["cls_report"])
 
 
-# model = ModelTraining()
-# model.training()
+model = ModelTraining()
+model.training()
