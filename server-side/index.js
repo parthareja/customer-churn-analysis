@@ -17,6 +17,7 @@ import authRoutes from "./routes/auth.js";
 import dashboardRoutes from "./routes/dashboard.js";
 
 const app = express();
+// TODO dotenv file path
 dotenv.config();
 
 app.use(

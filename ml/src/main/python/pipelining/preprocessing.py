@@ -231,7 +231,6 @@ class Preprocessing:
                 ("data_transformation", data_transformer),
                 ("feature_selector", feature_selector),
                 ("one_hot_encoder", one_hot_encode_tranformer),
-                ("train_val_splitter", train_val_splitter),
             ]
         )
 
