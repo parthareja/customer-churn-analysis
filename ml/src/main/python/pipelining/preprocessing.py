@@ -122,7 +122,7 @@ class Preprocessing:
         )
         preprocessing_pipeline = Pipeline(
             [
-                ("dropping_columns", drop_columns_transformer)
+                ("dropping_columns", drop_columns_transformer),
                 ("null_remover", remove_null_tranformer),
                 ("data_type_transformation", dtypes_transformer),
                 ("data_transformation", data_transformer),
