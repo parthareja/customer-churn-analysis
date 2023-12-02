@@ -115,7 +115,8 @@ function ContentDashboard(props) {
     console.log("uploading");
     await axios({
       method: "post",
-      url: "http://localhost:8080/dashboard/upload",
+      // url: "http://localhost:8080/dashboard/upload",
+      url: "http://localhost:5000/upload_excel",
       data: formDataExcel,
       headers: {
         "Content-Type": `multipart/form-data; boundary=${formDataExcel._boundary}`,
