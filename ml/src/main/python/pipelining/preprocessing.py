@@ -17,8 +17,18 @@ TARGET_COLUMN = "Churn Value"
 class Preprocessing:
     def __init__(self) -> None:
         # self.dataset = pd.read_excel(DATASET_PATH)
+        self.flag_train=True
+        self.remove_cols=[]
         return
 
+    @staticmethod
+    def drop_columns(dataset,self):
+        if self.flag_train:
+            dataset.drop(columns=["Latitude","Longitude","Lat Long","Country","State","Churn Value","Count","City","CustomerID","Churn Reason"],inplace=True)
+        else:
+            dataset.drop(columns=["Latitude","Longitude","Lat Long","Country","State","Count","City","CustomerID"],inplace=True)
+        return dataset
+    
     @staticmethod
     def dtypes_transformation(dataset):
         dataset["Total Charges"] = pd.to_numeric(
@@ -32,41 +42,52 @@ class Preprocessing:
         return dataset
 
     @staticmethod
-    def data_transformation(dataset):
-        dataset["Churn Label"].replace({"Yes": 1, "No": 0}, inplace=True)
-        dataset.drop(index=dataset[dataset["Total Charges"] == " "].index, inplace=True)
-        for column in dataset.columns:
-            if "No phone service" in dataset[column].unique():
-                dataset[column].replace(["No phone service"], ["No"], inplace=True)
-            elif "No internet service" in dataset[column].unique():
-                dataset[column].replace(["No internet service"], ["No"], inplace=True)
+    def data_transformation(dataset,self):
+        if self.flag_train:
+            dataset["Churn Label"].replace({"Yes": 1, "No": 0}, inplace=True)
+            dataset.drop(index=dataset[dataset["Total Charges"] == " "].index, inplace=True)
+            for column in dataset.columns:
+                if "No phone service" in dataset[column].unique():
+                    dataset[column].replace(["No phone service"], ["No"], inplace=True)
+                elif "No internet service" in dataset[column].unique():
+                    dataset[column].replace(["No internet service"], ["No"], inplace=True)
+        else:
+            dataset.drop(index=dataset[dataset["Total Charges"] == " "].index, inplace=True)
+            for column in dataset.columns:
+                if "No phone service" in dataset[column].unique():
+                    dataset[column].replace(["No phone service"], ["No"], inplace=True)
+                elif "No internet service" in dataset[column].unique():
+                    dataset[column].replace(["No internet service"], ["No"], inplace=True)
         return dataset
 
     @staticmethod
-    def feature_selection(dataset):
-        remove_cols = []
-        for col in dataset.columns:
-            if dataset[col].dtype == "object":
-                table = pd.crosstab(dataset["Churn Label"], dataset[col])
-                stat, pvalue, dof, expec = chi2_contingency(table)
-                conf = SIGNIFICANCE_LEVEL
-                if pvalue <= conf:
-                    # print(col,"is significantly affecting target, P-value=",pvalue)
-                    pass
-                else:
-                    remove_cols.append(col)
-                    # print(col, "is useless, P-value=",pvalue)
-        dataset.drop(columns=remove_cols, inplace=True)
-        return dataset
+    def feature_selection(dataset,self):
+        if self.flag_train:
+            for col in dataset.columns:
+                if dataset[col].dtype == "object":
+                    table = pd.crosstab(dataset["Churn Label"], dataset[col])
+                    stat, pvalue, dof, expec = chi2_contingency(table)
+                    conf = SIGNIFICANCE_LEVEL
+                    if pvalue <= conf:
+                        # print(col,"is significantly affecting target, P-value=",pvalue)
+                        pass
+                    else:
+                        self.remove_cols.append(col)
+                        # print(col, "is useless, P-value=",pvalue)
+            dataset.drop(columns=self.remove_cols, inplace=True)
+            return dataset
+        else:
+            return dataset
+
 
     @staticmethod
-    def train_val_split(dataset):
-        if "Churn Label" in dataset.columns:
+    def train_val_split(dataset,self):
+        if self.flag:
             train_df, validation_df = train_test_split(
                 dataset,
                 test_size=VALIDATION_SPLIT_SIZE,
                 random_state=SEED,
-                stratify=dataset["Churn Value"],
+                stratify=dataset["Churn Label"],
             )
             return train_df, validation_df
         else:
@@ -78,6 +99,9 @@ class Preprocessing:
         return dataset
 
     def preprocessing_pipeline(self):
+        drop_columns_transformer = preprocessing.FunctionTransformer(
+            Preprocessing.drop_columns
+        )
         dtypes_transformer = preprocessing.FunctionTransformer(
             Preprocessing.dtypes_transformation
         )
@@ -98,6 +122,7 @@ class Preprocessing:
         )
         preprocessing_pipeline = Pipeline(
             [
+                ("dropping_columns", drop_columns_transformer)
                 ("null_remover", remove_null_tranformer),
                 ("data_type_transformation", dtypes_transformer),
                 ("data_transformation", data_transformer),
