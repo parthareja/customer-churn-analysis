@@ -11,17 +11,8 @@ import pandas as pd
 import time
 import pickle
 
-# dotenv_path = Path("/env")
-# load_dotenv(dotenv_path=dotenv_path)
-# print(os.environ.get("SEED"))
+load_dotenv(".env")
 
-BASE_DATASET_PATH = Path("./ml/src/data/Telco_customer_churn.xlsx").as_posix()
-MODELS_DIR_PATH = Path("./ml/src/main/python/models")
-INCREMENTAL_DATA_PATH = Path("./ml/src/data/incremental_data")
-VALIDATION_SPLIT_SIZE = 0.3
-SEED = 42
-SIGNIFICANCE_LEVEL = 0.05
-TARGET_COLUMN = "Churn Value"
 
 # In config file
 xgb_hyperparams = {
@@ -35,26 +26,28 @@ class ModelTraining(Preprocessing):
     def __init__(
         self,
     ) -> None:
-        for root, dirs, files in os.walk(MODELS_DIR_PATH):
+        for root, dirs, files in os.walk(Path(os.getenv("MODELS_DIR_PATH"))):
             if len(files) > 1:
                 self.model_exists = True
             else:
                 self.model_exists = False
 
-        for root, dirs, files in os.walk(INCREMENTAL_DATA_PATH):
+        for root, dirs, files in os.walk(Path(os.getenv("INCREMENTAL_DATA_PATH"))):
             if len(files) > 1:
                 self.incremental_data_exists = True
-                self.increment_data_file_path = INCREMENTAL_DATA_PATH / files[0]
+                self.increment_data_file_path = (
+                    Path(os.getenv("INCREMENTAL_DATA_PATH")) / files[0]
+                )
             else:
                 self.incremental_data_exists = False
 
-        self.dataset = pd.read_excel(BASE_DATASET_PATH)
+        self.dataset = pd.read_excel(Path(os.getenv("BASE_DATASET_PATH")))
 
         if self.incremental_data_exists:
             self.incremental_dataset = pd.read_excel(self.increment_data_file_path)
             self.dataset = pd.concat([self.dataset, self.incremental_dataset])
-            os.remove(BASE_DATASET_PATH)
-            self.dataset.to_excel(BASE_DATASET_PATH)
+            os.remove(Path(os.getenv("BASE_DATASET_PATH")))
+            self.dataset.to_excel(Path(os.getenv("BASE_DATASET_PATH")))
             os.remove(self.increment_data_file_path)
 
     def training(self):
@@ -64,12 +57,12 @@ class ModelTraining(Preprocessing):
         elif self.model_exists == False or (
             self.model_exists and self.incremental_data_exists
         ):
-            prepocess_pipeline = super().preprocessing_pipeline()
-            train_df, validation_df = prepocess_pipeline.transform(self.dataset)
-            x_train = train_df.drop(columns=[TARGET_COLUMN])
-            y_train = train_df[TARGET_COLUMN]
-            x_validation = validation_df.drop(columns=[TARGET_COLUMN])
-            y_validation = validation_df[TARGET_COLUMN]
+            prepocess_pipeline = super().preprocessing_pipeline_training()
+            train_df, validation_df = prepocess_pipeline.fit_transform(self.dataset)
+            x_train = train_df.drop(columns=[os.getenv("TARGET_COLUMN")])
+            y_train = train_df[os.getenv("TARGET_COLUMN")]
+            x_validation = validation_df.drop(columns=[os.getenv("TARGET_COLUMN")])
+            y_validation = validation_df[os.getenv("TARGET_COLUMN")]
 
             xgb = XGBClassifier()
 
@@ -102,7 +95,11 @@ class ModelTraining(Preprocessing):
                 "model_train_timestamp": time.time(),
             }
             pickle.dump(
-                pickle_dump, open(MODELS_DIR_PATH / f"model_{time.time()}.pickle", "wb")
+                pickle_dump,
+                open(
+                    Path(os.getenv("MODELS_DIR_PATH")) / f"model_{time.time()}.pickle",
+                    "wb",
+                ),
             )
 
             end_time = time.time()

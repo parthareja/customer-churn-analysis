@@ -124,7 +124,9 @@ class DataTransformerInference(BaseEstimator, TransformerMixin):
 
 class FeatureSelector(BaseEstimator, TransformerMixin):
     def __init__(
-        self, remove_columns=None, significance_level=os.getenv("SIGNIFICANCE_LEVEL")
+        self,
+        remove_columns=None,
+        significance_level=float(os.getenv("SIGNIFICANCE_LEVEL")),
     ) -> None:
         self.significance_level = significance_level
         self.columns = remove_columns
@@ -136,7 +138,7 @@ class FeatureSelector(BaseEstimator, TransformerMixin):
                 if X[col].dtype == "object":
                     table = pd.crosstab(X[os.getenv("TARGET_COLUMN")], X[col])
                     stat, pvalue, dof, expec = chi2_contingency(table)
-                    conf = os.getenv("SIGNIFICANCE_LEVEL")
+                    conf = self.significance_level
                     if pvalue > conf:
                         remove_cols_arr.append(col)
 
@@ -173,8 +175,8 @@ class TrainValSplitter(BaseEstimator, TransformerMixin):
         if os.getenv("TARGET_COLUMN") in X.columns:
             train_df, validation_df = train_test_split(
                 X,
-                test_size=os.getenv("VALIDATION_SPLIT_SIZE"),
-                random_state=os.getenv("SEED"),
+                test_size=float(os.getenv("VALIDATION_SPLIT_SIZE")),
+                random_state=int(os.getenv("SEED")),
                 stratify=X[os.getenv("TARGET_COLUMN")],
             )
             return train_df, validation_df
