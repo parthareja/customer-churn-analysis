@@ -116,5 +116,5 @@ class ModelTraining(Preprocessing):
             print(db["cls_report"])
 
 
-model = ModelTraining()
-model.training()
+# model = ModelTraining()
+# model.training()
