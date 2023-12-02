@@ -6,45 +6,51 @@ from sklearn.pipeline import Pipeline
 from sklearn.model_selection import train_test_split
 from sklearn import preprocessing
 from sklearn.base import BaseEstimator, TransformerMixin
+from dotenv import load_dotenv
+import os
 
-## in config file
-DATASET_PATH = "ml\src\data\Telco_customer_churn.xlsx"
-VALIDATION_SPLIT_SIZE = 0.3
-SEED = 42
-SIGNIFICANCE_LEVEL = 0.05
-TARGET_COLUMN = "Churn Label"
+load_dotenv(".env")
 
 
-class DropColumnTransformer(BaseEstimator, TransformerMixin):
+class DropColumnTransformerInference(BaseEstimator, TransformerMixin):
     def __init__(self) -> None:
         self.columns = []
 
     def fit(self, X, y=None):
-        cols = X.columns
-        if ("Churn Value" in cols) and ("Churn Reason" in cols):
-            self.columns = [
-                "Latitude",
-                "Longitude",
-                "Lat Long",
-                "Country",
-                "State",
-                "Churn Value",
-                "Count",
-                "City",
-                "CustomerID",
-                "Churn Reason",
-            ]
-        else:
-            self.columns = [
-                "Latitude",
-                "Longitude",
-                "Lat Long",
-                "Country",
-                "State",
-                "Count",
-                "City",
-                "CustomerID",
-            ]
+        self.columns = [
+            "Latitude",
+            "Longitude",
+            "Lat Long",
+            "Country",
+            "State",
+            "Count",
+            "City",
+            "CustomerID",
+        ]
+        return self
+
+    def transform(self, X):
+        X = X.drop(columns=self.columns)
+        return X
+
+
+class DropColumnTransformerTrain(BaseEstimator, TransformerMixin):
+    def __init__(self) -> None:
+        self.columns = []
+
+    def fit(self, X, y=None):
+        self.columns = [
+            "Latitude",
+            "Longitude",
+            "Lat Long",
+            "Country",
+            "State",
+            "Churn Value",
+            "Count",
+            "City",
+            "CustomerID",
+            "Churn Reason",
+        ]
         return self
 
     def transform(self, X):
@@ -72,17 +78,17 @@ class RemoveNullTransformer(BaseEstimator, TransformerMixin):
         return self
 
     def transform(self, X):
-        X.dropna(subset=[self.column], inplace=True)
+        X = X.dropna(subset=[self.column])
         return X
 
 
-class DataTransformer(BaseEstimator, TransformerMixin):
+class DataTransformerTrain(BaseEstimator, TransformerMixin):
     def __init__(self) -> None:
         self.replace_column = []
 
     def fit(self, X, y=None):
-        if "Churn Label" in X.columns:
-            self.replace_column = "Churn Label"
+        if os.getenv("TARGET_COLUMN") in X.columns:
+            self.replace_column = os.getenv("TARGET_COLUMN")
         return self
 
     def transform(self, X):
@@ -98,20 +104,44 @@ class DataTransformer(BaseEstimator, TransformerMixin):
         return X
 
 
-class FeatureSelector(BaseEstimator, TransformerMixin):
-    def __init__(self, significance_level=SIGNIFICANCE_LEVEL) -> None:
-        self.significance_level = significance_level
-        self.columns = []
+class DataTransformerInference(BaseEstimator, TransformerMixin):
+    def __init__(self) -> None:
+        self.replace_column = []
 
     def fit(self, X, y=None):
-        if "Churn Label" in X.columns:
+        return self
+
+    def transform(self, X):
+        X = X.drop(index=X[X["Total Charges"] == " "].index)
+        for column in X.columns:
+            if "No phone service" in X[column].unique():
+                X[column].replace(["No phone service"], ["No"], inplace=True)
+            elif "No internet service" in X[column].unique():
+                X[column].replace(["No internet service"], ["No"], inplace=True)
+
+        return X
+
+
+class FeatureSelector(BaseEstimator, TransformerMixin):
+    def __init__(
+        self, remove_columns=None, significance_level=os.getenv("SIGNIFICANCE_LEVEL")
+    ) -> None:
+        self.significance_level = significance_level
+        self.columns = remove_columns
+
+    def fit(self, X, y=None):
+        if os.getenv("TARGET_COLUMN") in X.columns:
+            remove_cols_arr = []
             for col in X.columns:
                 if X[col].dtype == "object":
-                    table = pd.crosstab(X["Churn Label"], X[col])
+                    table = pd.crosstab(X[os.getenv("TARGET_COLUMN")], X[col])
                     stat, pvalue, dof, expec = chi2_contingency(table)
-                    conf = SIGNIFICANCE_LEVEL
+                    conf = os.getenv("SIGNIFICANCE_LEVEL")
                     if pvalue > conf:
-                        self.columns.append(col)
+                        remove_cols_arr.append(col)
+
+            self.columns = remove_cols_arr
+
             return self
         return self
 
@@ -140,12 +170,12 @@ class TrainValSplitter(BaseEstimator, TransformerMixin):
         return self
 
     def transform(self, X):
-        if "Churn Label" in X.columns:
+        if os.getenv("TARGET_COLUMN") in X.columns:
             train_df, validation_df = train_test_split(
                 X,
-                test_size=VALIDATION_SPLIT_SIZE,
-                random_state=SEED,
-                stratify=X["Churn Label"],
+                test_size=os.getenv("VALIDATION_SPLIT_SIZE"),
+                random_state=os.getenv("SEED"),
+                stratify=X[os.getenv("TARGET_COLUMN")],
             )
             return train_df, validation_df
         else:
@@ -159,16 +189,16 @@ class Preprocessing:
         self.remove_cols = []
         return
 
-    def preprocessing_pipeline(self):
-        drop_columns_transformer = DropColumnTransformer()
+    def preprocessing_pipeline_training(self):
+        drop_columns_transformer = DropColumnTransformerTrain()
         remove_null_tranformer = RemoveNullTransformer()
         dtypes_transformer = DtypeTransformer()
-        data_transformer = DataTransformer()
+        data_transformer = DataTransformerTrain()
         feature_selector = FeatureSelector()
         one_hot_encode_tranformer = OneHotEncoder()
         train_val_splitter = TrainValSplitter()
 
-        preprocessing_pipeline = Pipeline(
+        preprocessing_pipeline_trainnig = Pipeline(
             [
                 ("dropping_columns", drop_columns_transformer),
                 ("null_remover", remove_null_tranformer),
@@ -180,7 +210,30 @@ class Preprocessing:
             ]
         )
 
-        return preprocessing_pipeline
+        return preprocessing_pipeline_trainnig
+
+    def preprocessing_pipeline_inference(self):
+        drop_columns_transformer = DropColumnTransformerInference()
+        remove_null_tranformer = RemoveNullTransformer()
+        dtypes_transformer = DtypeTransformer()
+        data_transformer = DataTransformerInference()
+        feature_selector = FeatureSelector()
+        one_hot_encode_tranformer = OneHotEncoder()
+        train_val_splitter = TrainValSplitter()
+
+        preprocessing_pipeline_inference = Pipeline(
+            [
+                ("dropping_columns", drop_columns_transformer),
+                ("null_remover", remove_null_tranformer),
+                ("data_type_transformation", dtypes_transformer),
+                ("data_transformation", data_transformer),
+                ("feature_selector", feature_selector),
+                ("one_hot_encoder", one_hot_encode_tranformer),
+                ("train_val_splitter", train_val_splitter),
+            ]
+        )
+
+        return preprocessing_pipeline_inference
 
 
 # df = pd.read_excel(
