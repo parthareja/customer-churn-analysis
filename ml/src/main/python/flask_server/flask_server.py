@@ -60,7 +60,7 @@ def uploadTesting():
     dataset, report = model.inference_pipeline()
     print(report)
     # return jsonify({"report": report, "dataset": dataset})
-    return send_file("../../../data/inference_data/inference_dataset.xlsx")
+    return send_file("../../../data/inference_data/inference_dataset.csv",as_attachment=True)
 
 
 @app.route("/upload_incremental", methods=["POST"])

@@ -21,11 +21,12 @@ class Inference(Preprocessing):
         for root, dirs, files in os.walk(Path(os.getenv("INFERENCE_DATA_PATH"))):
             if len(files) > 1:
                 os.remove(
-                    Path(os.getenv("INFERENCE_DATA_PATH")) / "inference_dataset.xlsx"
+                    Path(os.getenv("INFERENCE_DATA_PATH")) / "inference_dataset.csv"
                 )
 
     def inference_pipeline(self):
         if self.test_data_exists:
+            test_dataset = self.dataset.copy()
             prepocess_pipeline = super().preprocessing_pipeline_inference()
             training_dataset = pd.read_excel(Path(os.getenv("BASE_DATASET_PATH")))
 
@@ -43,10 +44,13 @@ class Inference(Preprocessing):
 
             preds = xgb_model.predict(self.dataset)
 
-            self.dataset["Churn Prediction"] = preds
+            result_df = pd.DataFrame()
+            result_df['Customer ID'] = test_dataset["CustomerID"]
+            result_df['Churn Prediction'] = preds
 
-            self.dataset.to_excel(
-                Path(os.getenv("INFERENCE_DATA_PATH")) / "inference_dataset.xlsx"
+
+            result_df.to_csv(
+                Path(os.getenv("INFERENCE_DATA_PATH")) / "inference_dataset.csv"
             )
 
             model_file.close()
