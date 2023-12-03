@@ -200,7 +200,6 @@ class TrainValSplitter(BaseEstimator, TransformerMixin):
 class Preprocessing:
     def __init__(self) -> None:
         # self.dataset = pd.read_excel(DATASET_PATH)
-        self.flag_train = True
         self.remove_cols = []
         return
 
@@ -209,7 +208,7 @@ class Preprocessing:
         remove_null_tranformer = RemoveNullTransformer()
         dtypes_transformer = DtypeTransformer()
         data_transformer = DataTransformerTrain()
-        feature_selector = FeatureSelector()
+        # feature_selector = FeatureSelector()
         one_hot_encode_tranformer = OneHotEncoder()
         train_val_splitter = TrainValSplitter()
 
@@ -232,7 +231,7 @@ class Preprocessing:
         remove_null_tranformer = RemoveNullTransformer()
         dtypes_transformer = DtypeTransformer()
         data_transformer = DataTransformerInference()
-        feature_selector = FeatureSelector()
+        # feature_selector = FeatureSelector()
         one_hot_encode_tranformer = OneHotEncoder()
         train_val_splitter = TrainValSplitter()
 
