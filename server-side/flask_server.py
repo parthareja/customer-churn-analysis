@@ -87,10 +87,16 @@ def index():
 #     return result
 #     # return jsonify({"result": list(prediction)})
 
-@app.route("/upload_excel", methods=["POST"])
-def upload():
+@app.route("/upload_testing", methods=["POST"])
+def uploadTesting():
     file = req.files["excel_file"]
     file.save(os.path.join("../ml/src/data/testing_data", secure_filename(file.filename)))
+    return jsonify({"result": "saved file on disk"})
+
+@app.route("/upload_incremental", methods=["POST"])
+def uploadIncremental():
+    file = req.files["excel_file"]
+    file.save(os.path.join("../ml/src/data/incremental_data", secure_filename(file.filename)))
     return jsonify({"result": "saved file on disk"})
 
 if __name__ == "__main__":
