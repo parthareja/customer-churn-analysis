@@ -11,6 +11,7 @@ import SignUp from "./components/SignUp";
 import SignIn from "./components/SignIn";
 import AuthApi from "./utils/AuthApi";
 import DashBoard from "./components/Dashboard/DashBoard";
+import InferenceDashboard from "./components/InferenceDashboard/InferenceDashboard";
 import TestDev from "./components/TestDev";
 import GLoginPage from "./components/pages/GLoginPage";
 
@@ -71,6 +72,7 @@ function App() {
             <Route path="/" element={<GLoginPage />} />
             {/* <Route path="/glogin" element={<GLoginPage />} /> */}
             <Route path="/dashboard" element={<DashBoard />} />
+            <Route path="/inferenceDashboard" element={<InferenceDashboard />} />
             <Route path="/login" element={<GLoginPage />} />
             {/* <Route path="/signup" element={<SignUp />} /> */}
             <Route
