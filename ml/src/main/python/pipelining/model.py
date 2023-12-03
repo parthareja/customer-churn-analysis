@@ -36,7 +36,7 @@ class ModelTraining(Preprocessing):
             if len(files) > 1:
                 self.incremental_data_exists = True
                 self.increment_data_file_path = (
-                    Path(os.getenv("INCREMENTAL_DATA_PATH")) / files[-1]
+                    Path(os.getenv("INCREMENTAL_DATA_PATH")) / sorted(files)[-1]
                 )
             else:
                 self.incremental_data_exists = False
@@ -44,6 +44,7 @@ class ModelTraining(Preprocessing):
         self.dataset = pd.read_excel(Path(os.getenv("BASE_DATASET_PATH")))
 
         if self.incremental_data_exists:
+            print(self.increment_data_file_path)
             self.incremental_dataset = pd.read_excel(self.increment_data_file_path)
             self.dataset = pd.concat([self.dataset, self.incremental_dataset])
             os.remove(Path(os.getenv("BASE_DATASET_PATH")))
@@ -109,5 +110,5 @@ class ModelTraining(Preprocessing):
             return xgb_best, cls_report
 
 
-# model = ModelTraining()
-# model.training()
+model = ModelTraining()
+model.training()

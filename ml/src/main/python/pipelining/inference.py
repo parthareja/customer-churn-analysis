@@ -14,7 +14,7 @@ class Inference(Preprocessing):
             if len(files) > 1:
                 self.test_data_exists = True
                 self.dataset = pd.read_excel(
-                    Path(os.getenv("TEST_DATA_PATH")) / files[-1]
+                    Path(os.getenv("TEST_DATA_PATH")) / sorted(files)[-1]
                 )
             else:
                 self.test_data_exists = False
@@ -27,7 +27,7 @@ class Inference(Preprocessing):
             prepocess_pipeline.fit(X=training_dataset)
             self.dataset = prepocess_pipeline.transform(X=self.dataset)
             for root, dirs, files in os.walk(Path(os.getenv("MODELS_DIR_PATH"))):
-                model_file_name = files[-1]
+                model_file_name = sorted(files)[-1]
             model_file = open(
                 Path(os.getenv("MODELS_DIR_PATH")) / model_file_name, "rb"
             )
@@ -53,4 +53,6 @@ class Inference(Preprocessing):
 
 
 # inf = Inference()
-# inf.inference_pipeline()
+# df, cls_report = inf.inference_pipeline()
+# print(df.head())
+# print(df.columns)
