@@ -18,6 +18,11 @@ class Inference(Preprocessing):
                 )
             else:
                 self.test_data_exists = False
+        for root, dirs, files in os.walk(Path(os.getenv("INFERENCE_DATA_PATH"))):
+            if len(files) > 1:
+                os.remove(
+                    Path(os.getenv("INFERENCE_DATA_PATH")) / "inference_dataset.xlsx"
+                )
 
     def inference_pipeline(self):
         if self.test_data_exists:
