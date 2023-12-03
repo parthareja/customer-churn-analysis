@@ -6,6 +6,7 @@ import Form from "react-bootstrap/Form";
 import FormSelect from "react-bootstrap/FormSelect";
 import Row from "react-bootstrap/Row";
 import InputGroup from "react-bootstrap/InputGroup";
+import Spinner from 'react-bootstrap/Spinner';
 import { BsPassFill } from "react-icons/bs";
 import { useState } from "react";
 import Papa from "papaparse"
@@ -25,6 +26,8 @@ function ContentDashboard(props) {
   const setQueriesUpdate = props.setQueriesUpdate;
   const [errMessage, setErrMessage] = useState("");
   const [file, setFile] = useState()
+  const [spinnerIncremental, setSpinnerIncremental] = useState(false);
+  const [spinnerTest, setSpinnerTest] = useState(false);        
 
   var datajson = useRef({});
 
@@ -103,7 +106,7 @@ function ContentDashboard(props) {
   }
 
   const handleSubmitTesting = async (e) => {
-
+    setSpinnerTest(true)
     e.preventDefault();
     const reader = new FileReader();
     var file = document.getElementById("excel").files[0]
@@ -123,11 +126,12 @@ function ContentDashboard(props) {
       },
     }).then((res) => {
       console.log(res);
+      setSpinnerTest(false)
     });
   };
 
   const handleSubmitIncremental = async (e) => {
-
+    setSpinnerIncremental(true)
     e.preventDefault();
     const reader = new FileReader();
     var file = document.getElementById("excel").files[0]
@@ -147,6 +151,7 @@ function ContentDashboard(props) {
       },
     }).then((res) => {
       console.log(res);
+      setSpinnerIncremental(false)
     });
   };
 
@@ -164,10 +169,40 @@ function ContentDashboard(props) {
     TransactionTime.current = parseInt(e.currentTarget.value);
     // console.log(TransactionTime);
   };
+  if (spinnerIncremental){
+    return (
+      <div className="flex justify-center container p-4 self-center">
+        <div className="w-1/2 h-full ">
+          <div>
+            <h4 className="font-weight-bold"><b>Training your model...</b></h4>
+            <h6 className="font-weight-bold"><b>This is an intensive task, do not refresh the tab :)</b></h6>
+          </div>
+            <Spinner className="mt-3" animation="border" role="status">
+          </Spinner>
+          </div>
+      </div>
+
+    )
+  }
+  else if (spinnerTest){
+    return (
+      <div className="flex justify-center container p-4 self-center">
+        <div className="w-1/2 h-full ">
+          <div>
+            <h4 className="font-weight-bold"><b>Fetching the results and report...</b></h4>
+            <h6 className="font-weight-bold"><b>This is an intensive task, do not refresh the tab :)</b></h6>
+          </div>
+            <Spinner className="mt-3" animation="border" role="status">
+          </Spinner>
+          </div>
+      </div>
+    )
+  }
   return (
     <div className="flex justify-center container p-4 self-center">
       <div className="w-1/2 h-full ">
-
+      
+      {/* {spinner ? <p>Loading...</p> : null} */}
         <Form.Label className="mb-4 align-center">Upload Customer Dataset</Form.Label>
         <br />
         <input className="align-center" type={"file"} id={"excel"} accept={".xlsx"} onChange={handleChange}></input>
