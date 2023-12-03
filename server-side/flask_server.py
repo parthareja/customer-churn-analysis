@@ -68,7 +68,7 @@ def uploadIncremental():
     model = ModelTraining()
     best_model, report, training_time = model.training()
     print(report)
-    return jsonify({"model": best_model, "report": report, "training_time": training_time})
+    return jsonify({"report": report, "training_time": training_time})
 
 if __name__ == "__main__":
     app.run(port=5000, debug=True)
