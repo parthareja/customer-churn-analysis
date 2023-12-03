@@ -107,7 +107,7 @@ class ModelTraining(Preprocessing):
             total_training_time = end_time - start_time
             print("Total model training time in minutes: ", total_training_time / 60)
 
-            return xgb_best, cls_report
+            return xgb_best, cls_report, total_training_time
 
 
 model = ModelTraining()

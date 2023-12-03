@@ -58,7 +58,7 @@ def uploadTesting():
     sleep(0.5)
     dataset, report = model.inference_pipeline()
     print(report)
-    return jsonify({"result": "saved file on disk"})
+    return jsonify({"report": report, "dataset": dataset})
 
 @app.route("/upload_incremental", methods=["POST"])
 def uploadIncremental():
@@ -66,9 +66,9 @@ def uploadIncremental():
     file.save(os.path.join("./ml/src/data/incremental_data", secure_filename(file.filename)))
     sleep(0.5)
     model = ModelTraining()
-    best_model, report = model.training()
+    best_model, report, training_time = model.training()
     print(report)
-    return jsonify({"result": "saved file on disk"})
+    return jsonify({"model": best_model, "report": report, "training_time": training_time})
 
 if __name__ == "__main__":
     app.run(port=5000, debug=True)
