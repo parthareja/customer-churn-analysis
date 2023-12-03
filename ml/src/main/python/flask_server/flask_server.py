@@ -1,5 +1,5 @@
 from IPython.display import display
-from flask import Flask, jsonify, request as req, send_file
+from flask import Flask, jsonify, request as req, send_file, make_response
 import pickle
 import sklearn
 import os
@@ -10,7 +10,7 @@ from werkzeug.utils import secure_filename
 from time import sleep
 import sys
 from dotenv import load_dotenv
-
+import json
 
 import pandas as pd
 
@@ -56,11 +56,17 @@ def uploadTesting():
     file = req.files["excel_file"]
     file.save(os.path.join("./src/data/testing_data", secure_filename(file.filename)))
     model = Inference()
+    send_dict=dict()
     sleep(0.5)
     dataset, report = model.inference_pipeline()
     print(report)
+    # send_dict["csv_file"]= send_file("../../../data/inference_data/inference_dataset.csv",as_attachment=True)
+    # send_dict["report"] = report
+
     # return jsonify({"report": report, "dataset": dataset})
-    return send_file("../../../data/inference_data/inference_dataset.csv",as_attachment=True)
+    response = make_response(send_file("../../../data/inference_data/inference_dataset.csv",as_attachment=True))
+    response.headers['content-type'] = report
+    return response
 
 
 @app.route("/upload_incremental", methods=["POST"])
