@@ -26,6 +26,7 @@ class ModelTraining(Preprocessing):
     def __init__(
         self,
     ) -> None:
+        print(Path(os.getenv("MODELS_DIR_PATH")))
         for root, dirs, files in os.walk(Path(os.getenv("MODELS_DIR_PATH"))):
             if len(files) > 1:
                 self.model_exists = True
@@ -110,5 +111,5 @@ class ModelTraining(Preprocessing):
             return xgb_best, cls_report, total_training_time
 
 
-model = ModelTraining()
-model.training()
+# model = ModelTraining()
+# model.training()

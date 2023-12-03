@@ -1,5 +1,5 @@
 from IPython.display import display
-from flask import Flask, jsonify, request as req
+from flask import Flask, jsonify, request as req, send_file
 import pickle
 import sklearn
 import os
@@ -9,16 +9,17 @@ import flask_cors
 from werkzeug.utils import secure_filename
 from time import sleep
 import sys
+from dotenv import load_dotenv
 
 
 import pandas as pd
 
-sys.path.insert(1, "./ml/src/main/python/pipelining")
+sys.path.insert(1, "./src/main/python/pipelining")
 
 from model import ModelTraining
 from inference import Inference
 
-config = dotenv_values(".env")
+load_dotenv(".env")
 # print("config", config)
 # model_file_path = os.getcwd() + "\\rf_model_financial_fraud_detection.pkl"
 
@@ -53,22 +54,27 @@ def index():
 @app.route("/upload_testing", methods=["POST"])
 def uploadTesting():
     file = req.files["excel_file"]
-    file.save(os.path.join("./ml/src/data/testing_data", secure_filename(file.filename)))
+    file.save(os.path.join("./src/data/testing_data", secure_filename(file.filename)))
     model = Inference()
     sleep(0.5)
     dataset, report = model.inference_pipeline()
     print(report)
-    return jsonify({"report": report, "dataset": dataset})
+    # return jsonify({"report": report, "dataset": dataset})
+    return send_file("../../../data/inference_data/inference_dataset.xlsx")
+
 
 @app.route("/upload_incremental", methods=["POST"])
 def uploadIncremental():
     file = req.files["excel_file"]
-    file.save(os.path.join("./ml/src/data/incremental_data", secure_filename(file.filename)))
+    file.save(
+        os.path.join("./src/data/incremental_data", secure_filename(file.filename))
+    )
     sleep(0.5)
     model = ModelTraining()
     best_model, report, training_time = model.training()
     print(report)
     return jsonify({"report": report, "training_time": training_time})
+
 
 if __name__ == "__main__":
     app.run(port=5000, debug=True)
