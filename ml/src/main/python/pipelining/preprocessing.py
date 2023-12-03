@@ -208,7 +208,7 @@ class Preprocessing:
         remove_null_tranformer = RemoveNullTransformer()
         dtypes_transformer = DtypeTransformer()
         data_transformer = DataTransformerTrain()
-        feature_selector = FeatureSelector()
+        # feature_selector = FeatureSelector()
         one_hot_encode_tranformer = OneHotEncoder()
         train_val_splitter = TrainValSplitter()
 
@@ -231,7 +231,7 @@ class Preprocessing:
         remove_null_tranformer = RemoveNullTransformer()
         dtypes_transformer = DtypeTransformer()
         data_transformer = DataTransformerInference()
-        feature_selector = FeatureSelector()
+        # feature_selector = FeatureSelector()
         one_hot_encode_tranformer = OneHotEncoder()
         train_val_splitter = TrainValSplitter()
 
