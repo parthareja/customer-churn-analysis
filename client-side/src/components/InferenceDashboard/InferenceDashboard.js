@@ -33,7 +33,7 @@ function InferenceDashboard() {
   // }, [user, queriesUpdate]);
 
   // const testUser = {"firstName":"bruh","lastName":"yesyes","email":"yes@gmail.com"}
-  const test_clf_report = {'0': {'precision': 0.9451612903225807, 'recall': 0.948220064724919, 'f1-score': 0.9466882067851373, 'support': 1236.0}, 
+  const clf_report = {'0': {'precision': 0.9451612903225807, 'recall': 0.948220064724919, 'f1-score': 0.9466882067851373, 'support': 1236.0}, 
                           '1': {'precision': 0.8859180035650623, 'recall': 0.879646017699115, 'f1-score': 0.8827708703374777, 'support': 565.0}, 
                           'accuracy': 0.9267073847862298, 'macro avg': {'precision': 0.9155396469438215, 'recall': 0.913933041212017, 'f1-score': 0.9147295385613075, 'support': 1801.0}, 
                           'weighted avg': {'precision': 0.9265758061371293, 'recall': 0.9267073847862298, 'f1-score': 0.9266364049567489, 'support': 1801.0}}
@@ -48,15 +48,56 @@ function InferenceDashboard() {
       />
       <div className="flex container justify-center p-4">
         <div>
-          <Table striped bordered hover variant= 'dark'>
+          <Table striped bordered hover variant= 'light'>
           <thead>
             <tr>
-              <th>#</th>
-              <th>First Name</th>
-              <th>Last Name</th>
-              <th>Username</th>
+              <th>Class</th>
+              <th>Precision</th>
+              <th>Recall</th>
+              <th>F1-Score</th>
+              <th>Support</th>
             </tr>
         </thead>
+        <tbody>
+          <tr>
+            <td>0</td>
+            <td>{Math.round(clf_report[0].precision*1000)/1000}</td>
+            <td>{Math.round(clf_report[0].recall*1000)/1000}</td>
+            <td>{Math.round(clf_report[0]["f1-score"]*1000)/1000}</td>
+            <td>{clf_report[0].support}</td>
+          </tr>
+          <tr>
+            <td>1</td>
+            <td>{Math.round(clf_report[1].precision*1000)/1000}</td>
+            <td>{Math.round(clf_report[1].recall*1000)/1000}</td>
+            <td>{Math.round(clf_report[1]["f1-score"]*1000)/1000}</td>
+            <td>{clf_report[1].support}</td>
+          </tr>
+          <tr>
+            <td colSpan={5}></td>
+          </tr>
+          <tr>
+            <th>Accuracy</th>
+            <td colSpan={3}>{Math.round(clf_report.accuracy*1000)/1000}</td>
+            <td>{clf_report["macro avg"].support}</td>
+  
+          </tr>
+          <tr>
+            <th>Macro Avg.</th>
+            <td>{Math.round(clf_report["macro avg"].precision*1000)/1000}</td>
+            <td>{Math.round(clf_report["macro avg"].recall*1000)/1000}</td>
+            <td>{Math.round(clf_report["macro avg"]["f1-score"]*1000)/1000}</td>
+            <td>{Math.round(clf_report["macro avg"].support*1000)/1000}</td>
+            
+          </tr>
+          <tr>
+            <th>Weighted Avg.</th>
+            <td>{Math.round(clf_report["weighted avg"].precision*1000)/1000}</td>
+            <td>{Math.round(clf_report["weighted avg"].recall*1000)/1000}</td>
+            <td>{Math.round(clf_report["weighted avg"]["f1-score"]*1000)/1000}</td>
+            <td>{Math.round(clf_report["weighted avg"].support*1000)/1000}</td>
+          </tr>
+        </tbody>
           </Table>  
         </div>
         <div>
