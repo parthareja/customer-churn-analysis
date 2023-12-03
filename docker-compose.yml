@@ -1,0 +1,28 @@
+version: '1'
+services:
+  node-server:
+    build:
+      context: ./server-side
+      dockerfile: Dockerfile
+    container_name: churn-node-server
+    ports:
+      - 3000:3000
+
+  flask-server:
+    build:
+      context: ./ml
+      dockerfile: Dockerfile
+    container_name: ml-flask-server
+    ports:
+      - 5000:5000
+
+  client-server:
+    build:
+      context: ./client-side
+      dockerfile: Dockerfile
+    container_name: client-server
+    ports:
+      - 8080:8080
+    depends_on:
+      - flask-server
+      - node-server
