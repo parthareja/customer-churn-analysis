@@ -131,8 +131,8 @@ function ContentDashboard(props) {
     // console.log(clsDashboard)
     await axios({
       method: "post",
-      // url: "http://localhost:8080/dashboard/upload",
-      url: "http://localhost:5000/upload_testing",
+      // url: "http://node-server:8080/dashboard/upload",
+      url: "http://flask-server:5000/upload_testing",
       data: formDataExcel,
       headers: {
         "Content-Type": `multipart/form-data; boundary=${formDataExcel._boundary}`,
@@ -168,8 +168,8 @@ function ContentDashboard(props) {
     console.log("uploading");
     await axios({
       method: "post",
-      // url: "http://localhost:8080/dashboard/upload",
-      url: "http://localhost:5000/upload_incremental",
+      // url: "http://node-server:8080/dashboard/upload",
+      url: "http://flask-server:5000/upload_incremental",
       data: formDataExcel,
       headers: {
         "Content-Type": `multipart/form-data; boundary=${formDataExcel._boundary}`,

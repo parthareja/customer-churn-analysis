@@ -22,7 +22,7 @@ export const AuthProvider = ({ children }) => {
   const register = async ({}) => {};
 
   const logout = async () => {
-    const res = await fetch("http://localhost:8080/auth/logout", {
+    const res = await fetch("http://node-server:8080/auth/logout", {
       credentials: "include",
     });
     setUser(false);
@@ -51,7 +51,7 @@ export const AuthProvider = ({ children }) => {
       // setUser(undefined);
 
       const temp = await axios.get(
-        "http://localhost:8080/auth/defaultLoginJWTGetUser",
+        "http://node-server:8080/auth/defaultLoginJWTGetUser",
         {
           withCredentials: true,
         }

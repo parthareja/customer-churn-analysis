@@ -43,7 +43,7 @@ const Login = () => {
       email: decodedJWT.email,
       picture: decodedJWT.picture,
     };
-    const res = await fetch("http://localhost:8080/auth/login", {
+    const res = await fetch("http://node-server:8080/auth/login", {
       method: "POST",
       body: JSON.stringify({ jwt: response.credential }),
       headers: { "Content-Type": "application/json" },

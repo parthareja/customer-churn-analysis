@@ -27,7 +27,7 @@ load_dotenv(".env")
 app = Flask(__name__)
 flask_cors.CORS(
     app,
-    origins=["http://localhost:8080", "http://localhost:3000"],
+    origins=["http://node-server:8080", "http://client-server:3000"],
     supports_credentials=True,
 )
 

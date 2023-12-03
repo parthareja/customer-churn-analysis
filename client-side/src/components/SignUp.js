@@ -70,7 +70,7 @@ export default function SignUp() {
       password: data.get("password"),
     };
     // console.log(dataJSON);
-    const res = await fetch("http://localhost:8080/auth/register", {
+    const res = await fetch("http://node-serverer:8080/auth/register", {
       method: "POST",
       body: JSON.stringify(dataJSON),
       headers: { "Content-Type": "application/json" },
