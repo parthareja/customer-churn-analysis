@@ -107,7 +107,7 @@ class DataTransformerTrain(BaseEstimator, TransformerMixin):
     def transform(self, X):
         if len(self.replace_column) != 0:
             X[self.replace_column].replace({"Yes": 1, "No": 0}, inplace=True)
-        X.drop(index=X[X["Total Charges"] == " "].index, inplace=True)
+        # X.drop(index=X[X["Total Charges"] == " "].index, inplace=True)
         for column in X.columns:
             if "No phone service" in X[column].unique():
                 X[column].replace(["No phone service"], ["No"], inplace=True)
@@ -125,7 +125,7 @@ class DataTransformerInference(BaseEstimator, TransformerMixin):
         return self
 
     def transform(self, X):
-        X = X.drop(index=X[X["Total Charges"] == " "].index)
+        # X = X.drop(index=X[X["Total Charges"] == " "].index)
         for column in X.columns:
             if "No phone service" in X[column].unique():
                 X[column].replace(["No phone service"], ["No"], inplace=True)
@@ -135,34 +135,34 @@ class DataTransformerInference(BaseEstimator, TransformerMixin):
         return X
 
 
-class FeatureSelector(BaseEstimator, TransformerMixin):
-    def __init__(
-        self,
-        remove_columns=None,
-        significance_level=float(os.getenv("SIGNIFICANCE_LEVEL")),
-    ) -> None:
-        self.significance_level = significance_level
-        self.columns = remove_columns
+# class FeatureSelector(BaseEstimator, TransformerMixin):
+#     def __init__(
+#         self,
+#         remove_columns=None,
+#         significance_level=float(os.getenv("SIGNIFICANCE_LEVEL")),
+#     ) -> None:
+#         self.significance_level = significance_level
+#         self.columns = remove_columns
 
-    def fit(self, X, y=None):
-        if os.getenv("TARGET_COLUMN") in X.columns:
-            remove_cols_arr = []
-            for col in X.columns:
-                if X[col].dtype == "object":
-                    table = pd.crosstab(X[os.getenv("TARGET_COLUMN")], X[col])
-                    stat, pvalue, dof, expec = chi2_contingency(table)
-                    conf = self.significance_level
-                    if pvalue > conf:
-                        remove_cols_arr.append(col)
+#     def fit(self, X, y=None):
+#         if os.getenv("TARGET_COLUMN") in X.columns:
+#             remove_cols_arr = []
+#             for col in X.columns:
+#                 if X[col].dtype == "object":
+#                     table = pd.crosstab(X[os.getenv("TARGET_COLUMN")], X[col])
+#                     stat, pvalue, dof, expec = chi2_contingency(table)
+#                     conf = self.significance_level
+#                     if pvalue > conf:
+#                         remove_cols_arr.append(col)
 
-            self.columns = remove_cols_arr
+#             self.columns = remove_cols_arr
 
-            return self
-        return self
+#             return self
+#         return self
 
-    def transform(self, X):
-        X.drop(columns=self.columns, inplace=True)
-        return X
+#     def transform(self, X):
+#         X.drop(columns=self.columns, inplace=True)
+#         return X
 
 
 class OneHotEncoder(BaseEstimator, TransformerMixin):
