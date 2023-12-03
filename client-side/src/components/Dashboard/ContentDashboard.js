@@ -10,6 +10,7 @@ import Spinner from 'react-bootstrap/Spinner';
 import { BsPassFill } from "react-icons/bs";
 import { useState } from "react";
 import Papa from "papaparse"
+import { useNavigate } from "react-router-dom";
 
 import ResultModal from "./ResultModal.js";
 
@@ -27,7 +28,8 @@ function ContentDashboard(props) {
   const [errMessage, setErrMessage] = useState("");
   const [file, setFile] = useState()
   const [spinnerIncremental, setSpinnerIncremental] = useState(false);
-  const [spinnerTest, setSpinnerTest] = useState(false);        
+  const [spinnerTest, setSpinnerTest] = useState(false);
+  const navigate = useNavigate();
 
   var datajson = useRef({});
 
@@ -127,6 +129,7 @@ function ContentDashboard(props) {
     }).then((res) => {
       console.log(res);
       setSpinnerTest(false)
+      navigate("/inferenceDashboard")
     });
   };
 
