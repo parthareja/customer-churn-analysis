@@ -200,7 +200,6 @@ class TrainValSplitter(BaseEstimator, TransformerMixin):
 class Preprocessing:
     def __init__(self) -> None:
         # self.dataset = pd.read_excel(DATASET_PATH)
-        self.flag_train = True
         self.remove_cols = []
         return
 
