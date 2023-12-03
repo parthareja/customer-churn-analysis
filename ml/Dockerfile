@@ -12,12 +12,14 @@ RUN apt install -y python3
 
 RUN apt install -y python3-pip
 
-RUN pip3 install python3-venv
+RUN apt install -y python3.10-venv
 
-RUN python3 -m venv .venv && source ./.venv/bin/activate
+RUN python3 -m venv .venv
 
-RUN pip install -r requirements.txt
+RUN ["/bin/bash", "-c", "source ./.venv/bin/activate"]
+
+RUN pip install --default-timeout=100 -r requirements.txt
 
 EXPOSE 5000
 
-CMD [ "python3", "/src/main/python/flask_server/flask_server.py" ]
+CMD [ "python3", "./src/main/python/flask_server/flask_server.py" ]
