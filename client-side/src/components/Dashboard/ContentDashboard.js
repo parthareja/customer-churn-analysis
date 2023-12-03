@@ -24,7 +24,7 @@ function ContentDashboard(props) {
   const queriesUpdate = props.queriesUpdate;
   const setQueriesUpdate = props.setQueriesUpdate;
   const [errMessage, setErrMessage] = useState("");
-  const [file,setFile]=useState()
+  const [file, setFile] = useState()
 
   var datajson = useRef({});
 
@@ -102,12 +102,12 @@ function ContentDashboard(props) {
     setFile(e.target.files[0])
   }
 
-  const handleSubmit = async (e) => {
-    
+  const handleSubmitTesting = async (e) => {
+
     e.preventDefault();
     const reader = new FileReader();
     var file = document.getElementById("excel").files[0]
-    
+
     const formDataExcel = new FormData();
 
     // formDataExcel.append("layer_name", layer_name);
@@ -116,7 +116,7 @@ function ContentDashboard(props) {
     await axios({
       method: "post",
       // url: "http://localhost:8080/dashboard/upload",
-      url: "http://localhost:5000/upload_excel",
+      url: "http://localhost:5000/upload_testing",
       data: formDataExcel,
       headers: {
         "Content-Type": `multipart/form-data; boundary=${formDataExcel._boundary}`,
@@ -124,13 +124,30 @@ function ContentDashboard(props) {
     }).then((res) => {
       console.log(res);
     });
+  };
 
-    // Papa.parse(document.getElementById("excel").files[0], {
-    //   header:true,
-    //   complete: function(results) {
-    //       console.log("Finished:", results.meta.fields);
-    //   }
-    // });
+  const handleSubmitIncremental = async (e) => {
+
+    e.preventDefault();
+    const reader = new FileReader();
+    var file = document.getElementById("excel").files[0]
+
+    const formDataExcel = new FormData();
+
+    // formDataExcel.append("layer_name", layer_name);
+    formDataExcel.append("excel_file", file);
+    console.log("uploading");
+    await axios({
+      method: "post",
+      // url: "http://localhost:8080/dashboard/upload",
+      url: "http://localhost:5000/upload_incremental",
+      data: formDataExcel,
+      headers: {
+        "Content-Type": `multipart/form-data; boundary=${formDataExcel._boundary}`,
+      },
+    }).then((res) => {
+      console.log(res);
+    });
   };
 
   // (e) =>{(e)=>{if(e.currentTarget.value= 'transfer'){setTypeCashOut(0);setTypeTransfer(1)}}}
@@ -150,69 +167,20 @@ function ContentDashboard(props) {
   return (
     <div className="flex justify-center container p-4 self-center">
       <div className="w-1/2 h-full ">
-        {/* {showResultModal && (
-          <ResultModal
-            queriesUpdate={queriesUpdate}
-            setQueriesUpdate={setQueriesUpdate}
-            queryData={datajson}
-            result={modalData}
-            show={showResultModal}
-            onHide={() => setShowResultModal(false)}
-            showResultState={{ showResultModal, setShowResultModal }}
-          />
-        )} */}
 
-              <Form.Label className="mb-4">Upload Customer Dataset</Form.Label>
-              <input type ={"file"} id={"excel"} accept={".xlsx"} onChange={handleChange}></input>
-
-          {/* <Form.Group className="mb-3" controlId="formTransactionAlias">
-            <Form.Label>Enter Alias</Form.Label>
-            <Form.Control
-              placeholder="Enter an alias for this query (ex: JHN-09-02-03)"
-              autoComplete="off"
-              onChange={(e) => {
-                transactionAlias = e.target.value;
-              }}
-            />
-          </Form.Group> */}
-          {/* <div className='flex justify-center container bg-orange-200'>
-                        <Row className="mb-3 flex flex-col">
-                            <div className='flex'>
-                                <Form.Group as={Col} controlId="formTimeofTransaction">
-                                    <Form.Label>Select the Time of Transaction</Form.Label>
-                                    <Form.Select defaultValue="Choose...">
-                                        <option>00:00 - 01:00</option>
-                                        <option>01:00 - 02:00</option>
-                                        <option>02:00 - 03:00</option>
-                                        <option>03:00 - 04:00</option>
-                                        <option>04:00 - 05:00</option>
-                                        <option>05:00 - 06:00</option>
-                                        <option>06:00 - 07:00</option>
-                                        <option>07:00 - 08:00</option>
-                                        <option>08:00 - 09:00</option>
-                                        <option>09:00 - 10:00</option>
-                                        <option>10:00 - 11:00</option>
-                                        <option>11:00 - 12:00</option>
-                                   </Form.Select>
-                                </Form.Group>
-                            </div>
-                            <div className='flex bg-slate-50'>
-                                <Form.Group as={Col} controlId="formTimeofTransaction">
-                                    <div className='flex-1'>
-                                    <span>AM</span>
-                                    </div>
-                                    <Form.Check type="switch" id="custom-switch" label="PM" />
-                                </Form.Group>
-                            </div>
-                        </Row>
-                    </div> */}
-
-          {/* <div className="text-red-500 mb-3">{errMessage}</div> */}
-          <Button variant="primary" type="submit" onClick={handleSubmit}>
-            Submit
-          </Button>
+        <Form.Label className="mb-4 align-center">Upload Customer Dataset</Form.Label>
+        <br />
+        <input className="align-center" type={"file"} id={"excel"} accept={".xlsx"} onChange={handleChange}></input>
+        <br />
+        <br />
+        <Button className="m-2" variant="primary" type="submit" onClick={handleSubmitIncremental}>
+          Submit for incremental learning
+        </Button>
+        <Button className="m-2" variant="primary" type="submit" onClick={handleSubmitTesting}>
+          Submit for predicting results
+        </Button>
       </div>
-    </div>
+    </div >
   );
 }
 

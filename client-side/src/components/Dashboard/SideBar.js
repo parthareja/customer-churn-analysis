@@ -45,28 +45,28 @@ function SideBar(props) {
   const [modalData, setModalData] = useState({});
   const [time, setTime] = useState("");
 
-  useEffect(() => {
-    fetch(
-      `http://localhost:8080/auth/userTransactions/${UserContext.user._id}`,
-      { credentials: "include" }
-    )
-      .then((res) => res.json())
-      .then((data) => {
-        data.map((item) => {
-          if (item.type_CASH_OUT == 1) {
-            item.type_CASH_OUT = true;
-            item.type_TRANSFER = false;
-          } else {
-            item.type_TRANSFER = true;
-            item.type_CASH_OUT = false;
-          }
-        });
-        setAllUserTransaction(data.reverse());
-        // console.log(data);
-        // console.log(allUserTransactions);
-      })
-      .catch((err) => console.log(err));
-  }, [queries]);
+  // useEffect(() => {
+  //   fetch(
+  //     `http://localhost:8080/auth/userTransactions/${UserContext.user._id}`,
+  //     { credentials: "include" }
+  //   )
+  //     .then((res) => res.json())
+  //     .then((data) => {
+  //       data.map((item) => {
+  //         if (item.type_CASH_OUT == 1) {
+  //           item.type_CASH_OUT = true;
+  //           item.type_TRANSFER = false;
+  //         } else {
+  //           item.type_TRANSFER = true;
+  //           item.type_CASH_OUT = false;
+  //         }
+  //       });
+  //       setAllUserTransaction(data.reverse());
+  //       // console.log(data);
+  //       // console.log(allUserTransactions);
+  //     })
+  //     .catch((err) => console.log(err));
+  // }, [queries]);
 
   return (
     <div className="flex flex-col bg-neutral-900  w-80 text-white">
