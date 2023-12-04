@@ -23,7 +23,7 @@ pipeline {
             sh 'pwd'
             // sh 'apk add --no-cache su-exec'
             sh 'apk update'
-            sh 'apk add python3-pip'
+            sh 'apk add py3-pip'
             sh 'pip install requirements.txt'
         }
             }
