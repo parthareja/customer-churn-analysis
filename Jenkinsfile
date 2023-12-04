@@ -2,7 +2,7 @@ pipeline {
     agent {
         docker {
             image 'node:20.9.0-alpine3.18' 
-            args '-p 3000:3000' 
+            args '-p 3000:3000 -u root:root'
         }
     }
 
@@ -21,6 +21,7 @@ pipeline {
 
         dir ("ml"){
             sh 'pwd'
+            // sh 'apk add --no-cache su-exec'
             sh 'apk add python3-pip'
             sh 'pip install requirements.txt'
         }
