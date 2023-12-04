@@ -1,11 +1,11 @@
 pipeline {
-    // agent {
-    //     docker {
-    //         image 'node:alpine' 
-    //         args '-p 3000:3000 -u root:root'
-    //     }
-    // }
-    agent any
+    agent {
+        docker {
+            image 'node:alpine' 
+            args '-p 3000:3000 -u root:root'
+        }
+    }
+    // agent any
 
     stages {
         stage('Build') { 
@@ -23,8 +23,8 @@ pipeline {
                 dir ("ml"){
                     sh 'pwd'
                     // sh 'apk add --no-cache su-exec'
-                    sh 'apt update'
-                    sh 'apt install python3-pip'
+                    // sh 'apk update'
+                    sh 'apk add py3-pip'
                     sh 'pip3 install -r requirements.txt'
                 }
             }
@@ -50,6 +50,7 @@ pipeline {
             //         args '-p 2376:2376 -u root:root'
             //     }
             // }
+            agent any
             steps {
                 script {
                     try {
