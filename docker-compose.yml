@@ -1,25 +1,28 @@
-version: '1'
+version: '1.1'
 services:
   node-server:
-    build:
-      context: ./server-side
-      dockerfile: Dockerfile
+    image: sanidhyasamaiya/telco-customer-churn-analysis-node-server
+    # build:
+    #   context: ./server-side
+    #   dockerfile: Dockerfile
     container_name: churn-node-server
     ports:
       - 8080:8080
 
   flask-server:
-    build:
-      context: ./ml
-      dockerfile: Dockerfile
+    image: sanidhyasamaiya/telco-customer-churn-analysis-flask-server
+    # build:
+    #   context: ./ml
+    #   dockerfile: Dockerfile
     container_name: ml-flask-server
     ports:
       - 5000:5000
 
   client-server:
-    build:
-      context: ./client-side
-      dockerfile: Dockerfile
+    image: sanidhyasamaiya/telco-customer-churn-analysis-client-server
+    # build:
+    #   context: ./client-side
+    #   dockerfile: Dockerfile
     container_name: client-server
     ports:
       - 3000:3000
