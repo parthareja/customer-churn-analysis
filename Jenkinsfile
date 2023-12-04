@@ -23,8 +23,8 @@ pipeline {
                 dir ("ml"){
                     sh 'pwd'
                     // sh 'apk add --no-cache su-exec'
-                    sh 'apk update'
-                    sh 'apk add py3-pip'
+                    sh 'apt update'
+                    sh 'apt install python3-pip'
                     sh 'pip3 install -r requirements.txt'
                 }
             }
