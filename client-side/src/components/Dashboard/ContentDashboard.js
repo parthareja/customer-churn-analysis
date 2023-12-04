@@ -32,6 +32,7 @@ function ContentDashboard(props) {
   const [spinnerTest, setSpinnerTest] = useState(false);
   const [clsReport, setClsReport] = useState([]);
   const [clsDashboard,setClsDashboard] = useState(false)
+  const [clsDashboardIncremental, setClsDashboardIncremental] =  useState(false)
   const [download,setDownload] = useState([])
 
   var datajson = useRef({});
@@ -130,8 +131,8 @@ function ContentDashboard(props) {
     // console.log(clsDashboard)
     await axios({
       method: "post",
-      // url: "http://localhost:8080/dashboard/upload",
-      url: "http://localhost:5000/upload_testing",
+      // url: "http://node-server:8080/dashboard/upload",
+      url: "http://flask-server:5000/upload_testing",
       data: formDataExcel,
       headers: {
         "Content-Type": `multipart/form-data; boundary=${formDataExcel._boundary}`,
@@ -167,17 +168,22 @@ function ContentDashboard(props) {
     console.log("uploading");
     await axios({
       method: "post",
-      // url: "http://localhost:8080/dashboard/upload",
-      url: "http://localhost:5000/upload_incremental",
+      // url: "http://node-server:8080/dashboard/upload",
+      url: "http://flask-server:5000/upload_incremental",
       data: formDataExcel,
       headers: {
         "Content-Type": `multipart/form-data; boundary=${formDataExcel._boundary}`,
       },
     }).then((res) => {
-      console.log(res);
+      // console.log(res);
+      const cls_report = res.data.report
+      console.log(cls_report)
+      setClsReport(cls_report)
+      setClsDashboardIncremental(true)
       setSpinnerIncremental(false)
+
     });
-  };
+  }; 
 
 
   const handleDownload = (e) =>{
@@ -265,6 +271,71 @@ function ContentDashboard(props) {
       <Button className="ml-5" variant="primary" type="submit" onClick={handleDownload}>
         Download (.csv)
       </Button>
+    </div>
+  </div>
+  </div>
+  )
+  }
+  else if (clsDashboardIncremental){
+    return(
+    <div className="container justify-center">
+    <div className="container justify-center p-4">
+    <div className="m-20">
+      <p className="mb-5"><h2><b>Incremental Classification Report of the trained model</b></h2></p>
+      <Table striped bordered hover variant= 'light'>
+      <thead>
+        <tr>
+          <th>Class</th>
+          <th>Precision</th>
+          <th>Recall</th>
+          <th>F1-Score</th>
+          <th>Support</th>
+        </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>0</td>
+        <td>{Math.round(clsReport[0].precision*1000)/1000}</td>
+        <td>{Math.round(clsReport[0].recall*1000)/1000}</td>
+        <td>{Math.round(clsReport[0]["f1-score"]*1000)/1000}</td>
+        <td>{clsReport[0].support}</td>
+      </tr>
+      <tr>
+        <td>1</td>
+        <td>{Math.round(clsReport[1].precision*1000)/1000}</td>
+        <td>{Math.round(clsReport[1].recall*1000)/1000}</td>
+        <td>{Math.round(clsReport[1]["f1-score"]*1000)/1000}</td>
+        <td>{clsReport[1].support}</td>
+      </tr>
+      <tr>
+        <td colSpan={5}></td>
+      </tr>
+      <tr>
+        <th>Accuracy</th>
+        <td colSpan={3}>{Math.round(clsReport.accuracy*1000)/1000}</td>
+        <td>{clsReport["macro avg"].support}</td>
+
+      </tr>
+      <tr>
+        <th>Macro Avg.</th>
+        <td>{Math.round(clsReport["macro avg"].precision*1000)/1000}</td>
+        <td>{Math.round(clsReport["macro avg"].recall*1000)/1000}</td>
+        <td>{Math.round(clsReport["macro avg"]["f1-score"]*1000)/1000}</td>
+        <td>{Math.round(clsReport["macro avg"].support*1000)/1000}</td>
+        
+      </tr>
+      <tr>
+        <th>Weighted Avg.</th>
+        <td>{Math.round(clsReport["weighted avg"].precision*1000)/1000}</td>
+        <td>{Math.round(clsReport["weighted avg"].recall*1000)/1000}</td>
+        <td>{Math.round(clsReport["weighted avg"]["f1-score"]*1000)/1000}</td>
+        <td>{Math.round(clsReport["weighted avg"].support*1000)/1000}</td>
+      </tr>
+    </tbody>
+      </Table>  
+    </div>
+    <div>
+        
     </div>
   </div>
   </div>

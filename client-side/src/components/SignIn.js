@@ -71,7 +71,7 @@ export default function SignIn() {
       password: data.get("password"),
     };
     // console.log(dataJSON);
-    const res = await fetch("http://localhost:8080/auth/login", {
+    const res = await fetch("http://node-server:8080/auth/login", {
       method: "POST",
       body: JSON.stringify(dataJSON),
       headers: { "Content-Type": "application/json" },

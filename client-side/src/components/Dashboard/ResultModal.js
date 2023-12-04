@@ -116,7 +116,7 @@ const ResultModal = (props) => {
   const handleSave = async () => {
     console.log("saving");
     if (validateForm()) {
-    await fetch("http://localhost:8080/auth/saveQuery", {
+    await fetch("http://node-server:8080/auth/saveQuery", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(queryDataWithResult.current),
