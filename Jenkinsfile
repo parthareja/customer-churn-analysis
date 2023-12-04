@@ -80,4 +80,38 @@ pipeline {
             }
         }
     }
+    post {
+        failure {
+            script {
+                echo 'Before email notification'
+
+                // Stop and remove the Docker container
+                sh 'docker stop ${DOCKER_CONTAINER_NAME} || true'
+                sh 'docker rm ${DOCKER_CONTAINER_NAME} || true'
+
+                // Send email notification with web app URL and failure details
+                emailext subject: "Web App Build and Test Results - ${currentBuild.result}",
+                    body: """
+                    See Jenkins console output for details.
+
+                    Web App URL: http://your-jenkins-server:8080
+
+                    Failure Details:
+                    - Build: ${currentBuild.result == 'FAILURE' ? 'Failed' : 'Successful'}
+                    - Unit Test: ${currentBuild.result == 'FAILURE' ? 'Failed' : 'Successful'}
+                    - Deployment: ${currentBuild.result == 'FAILURE' ? 'Failed' : 'Successful'}
+                    """,
+                    recipientProviders: [
+                        [$class: 'CulpritsRecipientProvider'],
+                        [$class: 'DevelopersRecipientProvider'],
+                        [$class: 'RequesterRecipientProvider']
+                    ],
+                    replyTo: '$DEFAULT_REPLYTO',
+                    to: '$DEFAULT_RECIPIENTS'
+
+                echo 'After email notification'
+            }
+        }
+    }
 }
+
