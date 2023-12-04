@@ -1,7 +1,7 @@
 pipeline {
     agent {
         docker {
-            image 'node:20.9.0-alpine3.18' 
+            image 'ubuntu:latest' 
             args '-p 3000:3000 -u root:root'
         }
     }
@@ -22,8 +22,8 @@ pipeline {
         dir ("ml"){
             sh 'pwd'
             // sh 'apk add --no-cache su-exec'
-            sh 'apk update'
-            sh 'apk add py3-pip'
+            sh 'apt update'
+            sh 'apt install python3-pip'
             sh 'pip install -r requirements.txt'
         }
             }
