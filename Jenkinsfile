@@ -1,10 +1,11 @@
 pipeline {
-    agent {
-        docker {
-            image 'node:lts-buster' 
-            args '-p 3000:3000 -u root:root'
-        }
-    }
+    // agent {
+    //     docker {
+    //         image 'node:lts-buster' 
+    //         args '-p 3000:3000 -u root:root'
+    //     }
+    // }
+    agent any
 
     stages {
         stage('Build') { 
@@ -37,6 +38,34 @@ pipeline {
                     } catch (Exception testException) {
                         currentBuild.result = 'FAILURE'
                         throw testException
+                    }
+                }
+            }
+        }
+
+        stage('Deploy') {
+            steps {
+                script {
+                    try {
+                        echo 'Deploying the application'
+
+                        // Log into Docker
+                        // sh "echo ${DOCKER_PASSWORD} | docker login -u ${DOCKER_USERNAME} --password-stdin"
+
+                        // Build Docker image
+                        // sh "docker build -t ${DOCKER_IMAGE_NAME} ."
+                        // sh ""
+                        // Run Docker container with port exposure
+                        // sh "docker run -d -p 8000:5000 --name ${DOCKER_CONTAINER_NAME} ${DOCKER_IMAGE_NAME}"
+
+                        // Wait for the web app to start
+                        sleep time: 30, unit: 'SECONDS'
+
+                        // Print Docker container logs for debugging
+                        sh "docker logs ${DOCKER_CONTAINER_NAME}"
+                    } catch (Exception deployException) {
+                        currentBuild.result = 'FAILURE'
+                        throw deployException
                     }
                 }
             }
