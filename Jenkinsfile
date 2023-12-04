@@ -24,23 +24,24 @@ pipeline {
             // sh 'apk add --no-cache su-exec'
             sh 'apk update'
             sh 'apk add py3-pip'
-            sh 'pip install requirements.txt'
+            sh 'pip install -r requirements.txt'
         }
             }
         }
-	    // stage('Test') {
-        //         steps {
-        //             {
-        //                 script {
-        //                     try {
-        //                         sh 'python unit_test.py'
-        //                     } catch (Exception testException) {
-        //                         currentBuild.result = 'FAILURE'
-        //                         throw testException
-        //                     }
-        //                 }
-        //             }
-        //         }
-	    // }
+	    stage('Test') {
+                steps {
+                    {
+                        script {
+                            try {
+                                sh 'pwd'
+                                sh 'python unit_test.py'
+                            } catch (Exception testException) {
+                                currentBuild.result = 'FAILURE'
+                                throw testException
+                            }
+                        }
+                    }
+                }
+	    }
     }
 }
