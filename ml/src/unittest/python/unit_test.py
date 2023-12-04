@@ -2,7 +2,7 @@ import unittest
 # from //ml//src//main//python//pipelining//preprocessing.py import Preprocessing
 import pandas as pd
 import sys
-sys.path.append("./ml/src/main/python/pipelining")
+sys.path.append("ml\\src\\main\\python\\pipelining")
 from preprocessing import DropColumnTransformerTrain
 from preprocessing import DropColumnTransformerInference
 from preprocessing import Preprocessing
@@ -21,7 +21,7 @@ load_dotenv(".env")
 
 
 class Preprocessingtest(unittest.TestCase):
-    df= pd.read_excel(os.getenv("BASE_DATASET_PATH"))
+    df= pd.read_excel("ml\\src\\data\\Telco_customer_churn.xlsx")
     drop_columns_obj_train=DropColumnTransformerTrain()
     drop_columns_obj_infer=DropColumnTransformerInference()
     d_type_obj=DtypeTransformer()

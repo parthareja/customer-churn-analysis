@@ -23,8 +23,8 @@ pipeline {
                 dir ("ml"){
                     sh 'pwd'
                     // sh 'apk add --no-cache su-exec'
-                    sh 'sudo apt update'
-                    sh 'sudo apt install python3-pip'
+                    sh 'apt update'
+                    sh 'apt install python3-pip'
                     sh 'pip3 install -r requirements.txt'
                 }
             }
@@ -64,11 +64,11 @@ pipeline {
                         // Run Docker container with port exposure
                         // sh "docker run -d -p 8000:5000 --name ${DOCKER_CONTAINER_NAME} ${DOCKER_IMAGE_NAME}"
                         sh "pwd"
-                        sh "sudo docker compose up ."
+                        sh "docker compose up ."
                         // Wait for the web app to start
                         sleep time: 30, unit: 'SECONDS'
                         // Print Docker container logs for debugging
-                        sh "sudo docker compose logs"
+                        sh "docker compose logs"
                     } catch (Exception deployException) {
                         currentBuild.result = 'FAILURE'
                         throw deployException
