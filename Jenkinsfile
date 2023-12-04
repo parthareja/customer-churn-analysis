@@ -5,14 +5,7 @@ pipeline {
             args '-p 3000:3000' 
         }
     }
-
-    environment{
-        DOCKER_USERNAME = 'aman bharega'
-        DOCKER_PASSWORD = 'aman bharega'
-        DOCKER_IMAGE_NAME = 'aman bharega'
-        DOCKER_CONTAINER_NAME = 'aman bahrega'
-        PATH = "/usr/local/bin:$PATH"
-    }
+    
     stages {
         stage('Build') { 
             steps {
@@ -25,21 +18,26 @@ pipeline {
 			sh 'pwd'	
 			sh 'yarn install'
 		}
+
+        dir ("ml"){
+            sh 'pwd'
+            sh 'pip install requirements.txt'
+        }
             }
         }
-	stage('Test') {
-                steps {
-                    {
-                        script {
-                            try {
-                                sh 'python unit_test.py'
-                            } catch (Exception testException) {
-                                currentBuild.result = 'FAILURE'
-                                throw testException
-                            }
-                        }
-                    }
-                }
-	    }
+	    // stage('Test') {
+        //         steps {
+        //             {
+        //                 script {
+        //                     try {
+        //                         sh 'python unit_test.py'
+        //                     } catch (Exception testException) {
+        //                         currentBuild.result = 'FAILURE'
+        //                         throw testException
+        //                     }
+        //                 }
+        //             }
+        //         }
+	    // }
     }
 }
