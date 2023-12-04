@@ -1,7 +1,7 @@
 pipeline {
     agent {
         docker {
-            image 'node:lts-buster' 
+            image 'ubuntu:jammy' 
             args '-p 3000:3000 -u root:root'
         }
     }
