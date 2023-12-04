@@ -21,7 +21,7 @@ pipeline {
 
         dir ("ml"){
             sh 'pwd'
-            sh 'apt install python3-pip'
+            sh 'apk add python3-pip'
             sh 'pip install requirements.txt'
         }
             }
