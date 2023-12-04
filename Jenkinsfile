@@ -24,7 +24,7 @@ pipeline {
             // sh 'apk add --no-cache su-exec'
             sh 'apt update'
             sh 'apt install python3-pip -y'
-            sh 'pip install -r requirements.txt'
+            sh 'pip3 install -r requirements.txt'
         }
             }
         }
