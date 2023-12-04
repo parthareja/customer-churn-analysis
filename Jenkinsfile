@@ -1,7 +1,7 @@
 pipeline {
     agent {
         docker {
-            image 'ubuntu:jammy' 
+            image 'python:3.9-alpine' 
             args '-p 3000:3000 -u root:root'
         }
     }
@@ -23,10 +23,10 @@ pipeline {
                 dir ("ml"){
                     sh 'pwd'
                     // sh 'apk add --no-cache su-exec'
-                    sh "apt update"
+                    // sh "apt update"
                     // sh 'sudo apt update'
                     // sh "apt install sudo"
-                    sh 'apt install -y python3-pip'
+                    sh 'apk add py3-pip'
                     sh 'pip3 install -r requirements.txt'
                 }
             }
