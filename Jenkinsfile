@@ -29,10 +29,10 @@ pipeline {
         }
 	stage('Test') {
                 steps {
-                    dir("ml/src/unittest/python"){
+                    {
                         script {
                             try {
-                                sh 'python3 unit_test.py'
+                                sh 'python .\\ml\\src\\unittest\\python\\unit_test.py'
                             } catch (Exception testException) {
                                 currentBuild.result = 'FAILURE'
                                 throw testException
