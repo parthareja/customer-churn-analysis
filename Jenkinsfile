@@ -26,7 +26,7 @@ pipeline {
                     sh "apt update"
                     // sh 'sudo apt update'
                     // sh "apt install sudo"
-                    sh 'apt install python3-pip'
+                    sh 'apt install -y python3-pip'
                     sh 'pip3 install -r requirements.txt'
                 }
             }
