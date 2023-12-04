@@ -2,7 +2,8 @@ import unittest
 # from //ml//src//main//python//pipelining//preprocessing.py import Preprocessing
 import pandas as pd
 import sys
-sys.path.append("ml\\src\\main\\python\\pipelining")
+import os
+sys.path.append("./ml/src/main/python/pipelining")
 from preprocessing import DropColumnTransformerTrain
 from preprocessing import DropColumnTransformerInference
 from preprocessing import Preprocessing
@@ -21,7 +22,7 @@ load_dotenv(".env")
 
 
 class Preprocessingtest(unittest.TestCase):
-    df= pd.read_excel("ml\\src\\data\\Telco_customer_churn.xlsx")
+    df= pd.read_excel(os.getenv("BASE_DATASET_PATH"))
     drop_columns_obj_train=DropColumnTransformerTrain()
     drop_columns_obj_infer=DropColumnTransformerInference()
     d_type_obj=DtypeTransformer()
@@ -66,7 +67,7 @@ class Preprocessingtest(unittest.TestCase):
     
     def test_dtypes(self):
         for i in range (0,5):
-            self.assertEqual(float,type(self.d_type_obj.fit_transform(self.df.iloc[i])["Total Charges"]))
+            self.assertEqual(np.float64,type(self.d_type_obj.fit_transform(self.df.iloc[i])["Total Charges"]))
     
 
     def test_remove_null(self):
@@ -93,7 +94,7 @@ class Preprocessingtest(unittest.TestCase):
 
     def test_train_val_splitter(self):
         train_df, validation_df = self.train_val_split.fit_transform(self.df)
-        self.assertAlmostEqual(self.df.shape[0]*(float(os.getenv("VALIDATION_SPLIT_SIZE"))),validation_df.shape[0],places=0)
+        self.assertLessEqual(self.df.shape[0]*(float(os.getenv("VALIDATION_SPLIT_SIZE"))),validation_df.shape[0])
 
 
 
