@@ -6,13 +6,13 @@ pipeline {
         }
     }
 
-    // environment{
-    //     DOCKER_USERNAME = 'aman bharega'
-    //     DOCKER_PASSWORD = 'aman bharega'
-    //     DOCKER_IMAGE_NAME = 'aman bharega'
-    //     DOCKER_CONTAINER_NAME = 'aman bahrega'
-    //     PATH = "/usr/local/bin:$PATH"
-    // }
+    environment{
+        DOCKER_USERNAME = 'aman bharega'
+        DOCKER_PASSWORD = 'aman bharega'
+        DOCKER_IMAGE_NAME = 'aman bharega'
+        DOCKER_CONTAINER_NAME = 'aman bahrega'
+        PATH = "/usr/local/bin:$PATH"
+    }
     stages {
         stage('Build') { 
             steps {
@@ -32,7 +32,7 @@ pipeline {
                     {
                         script {
                             try {
-                                sh 'python .\\ml\\src\\unittest\\python\\unit_test.py'
+                                sh 'python unit_test.py'
                             } catch (Exception testException) {
                                 currentBuild.result = 'FAILURE'
                                 throw testException
