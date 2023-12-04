@@ -29,19 +29,17 @@ pipeline {
             }
         }
 	    stage('Test') {
-                steps {
-                    {
-                        script {
-                            try {
-                                sh 'pwd'
-                                sh 'python unit_test.py'
-                            } catch (Exception testException) {
-                                currentBuild.result = 'FAILURE'
-                                throw testException
-                            }
-                        }
+            steps {
+                script {
+                    try {
+                        sh 'pwd'
+                        sh 'python unit_test.py'
+                    } catch (Exception testException) {
+                        currentBuild.result = 'FAILURE'
+                        throw testException
                     }
                 }
-	    }
+            }
+        }
     }
 }
