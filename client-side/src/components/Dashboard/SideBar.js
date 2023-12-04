@@ -47,7 +47,7 @@ function SideBar(props) {
 
   // useEffect(() => {
   //   fetch(
-  //     `http://node-server:8080/auth/userTransactions/${UserContext.user._id}`,
+  //     `http://localhost:8080/auth/userTransactions/${UserContext.user._id}`,
   //     { credentials: "include" }
   //   )
   //     .then((res) => res.json())
@@ -194,7 +194,7 @@ function UserTransactionModal(props) {
   const deleteTransaction = async () => {
     const trans_id = props.data._id;
     await fetch(
-      `http://node-server:8080/auth/deleteUserTransaction/${trans_id}`,
+      `http://localhost:8080/auth/deleteUserTransaction/${trans_id}`,
       { method: "DELETE" }
     )
       .then((res) => res.text())

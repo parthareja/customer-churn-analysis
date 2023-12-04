@@ -27,7 +27,7 @@ load_dotenv(".env")
 app = Flask(__name__)
 flask_cors.CORS(
     app,
-    origins=["http://node-server:8080", "http://client-server:3000"],
+    origins=["http://localhost:8080", "http://localhost:3000"],
     supports_credentials=True,
 )
 
@@ -56,7 +56,7 @@ def uploadTesting():
     file = req.files["excel_file"]
     file.save(os.path.join("./src/data/testing_data", secure_filename(file.filename)))
     model = Inference()
-    send_dict=dict()
+    send_dict = dict()
     sleep(0.5)
     dataset, report = model.inference_pipeline()
     print(report)
@@ -64,8 +64,12 @@ def uploadTesting():
     # send_dict["report"] = report
 
     # return jsonify({"report": report, "dataset": dataset})
-    response = make_response(send_file("../../../data/inference_data/inference_dataset.csv",as_attachment=True))
-    response.headers['content-type'] = report
+    response = make_response(
+        send_file(
+            "../../../data/inference_data/inference_dataset.csv", as_attachment=True
+        )
+    )
+    response.headers["content-type"] = report
     return response
 
 
