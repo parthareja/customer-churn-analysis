@@ -5,6 +5,14 @@ pipeline {
             args '-p 3000:3000' 
         }
     }
+
+    // environment{
+    //     DOCKER_USERNAME = 'aman bharega'
+    //     DOCKER_PASSWORD = 'aman bharega'
+    //     DOCKER_IMAGE_NAME = 'aman bharega'
+    //     DOCKER_CONTAINER_NAME = 'aman bahrega'
+    //     PATH = "/usr/local/bin:$PATH"
+    // }
     stages {
         stage('Build') { 
             steps {
@@ -20,12 +28,18 @@ pipeline {
             }
         }
 	stage('Test') {
-                 steps {
-                     dir("client-side"){
-                         sh 'pwd'
-                         sh './scripts/test.sh'		
-                     }
-                 }
-	}
+                steps {
+                    dir("ml/src/unittest/python"){
+                        script {
+                            try {
+                                sh 'python3 unit_test.py'
+                            } catch (Exception testException) {
+                                currentBuild.result = 'FAILURE'
+                                throw testException
+                            }
+                        }
+                    }
+                }
+	    }
     }
 }
