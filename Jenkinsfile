@@ -5,7 +5,7 @@ pipeline {
             args '-p 3000:3000' 
         }
     }
-    
+
     stages {
         stage('Build') { 
             steps {
@@ -21,6 +21,7 @@ pipeline {
 
         dir ("ml"){
             sh 'pwd'
+            sh 'apt install python3-pip'
             sh 'pip install requirements.txt'
         }
             }
