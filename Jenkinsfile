@@ -1,7 +1,7 @@
 pipeline {
     agent {
         docker {
-            image 'python:3.9-alpine' 
+            image 'python:3.9-bookworm' 
             args '-p 3000:3000 -u root:root'
         }
     }
@@ -23,10 +23,10 @@ pipeline {
                 dir ("ml"){
                     sh 'pwd'
                     // sh 'apk add --no-cache su-exec'
-                    // sh "apt update"
+                    sh "apt update"
                     // sh 'sudo apt update'
                     // sh "apt install sudo"
-                    sh 'apk add py3-pip'
+                    sh 'apt install python3-pip'
                     sh 'pip3 install -r requirements.txt'
                 }
             }
