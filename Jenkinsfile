@@ -1,7 +1,7 @@
 pipeline {
     agent {
         docker {
-            image 'ubuntu:latest' 
+            image 'node:lts-buster' 
             args '-p 3000:3000 -u root:root'
         }
     }
