@@ -1,7 +1,7 @@
 pipeline {
     agent {
         docker {
-            image 'node:alpine' 
+            image 'node:lts-buster' 
             args '-p 3000:3000 -u root:root'
         }
     }
@@ -23,8 +23,10 @@ pipeline {
                 dir ("ml"){
                     sh 'pwd'
                     // sh 'apk add --no-cache su-exec'
-                    // sh 'apk update'
-                    sh 'apk add py3-pip'
+                    sh "apt update"
+                    // sh 'sudo apt update'
+                    // sh "apt install sudo"
+                    sh 'apt install python3-pip'
                     sh 'pip3 install -r requirements.txt'
                 }
             }
