@@ -8,27 +8,27 @@ pipeline {
     agent any
 
     stages {
-        // stage('Build') { 
-        //     steps {
-        //         dir("client-side"){
-        //             sh 'pwd'	
-        //             sh 'yarn install'
-        //         }
+        stage('Build') { 
+            steps {
+                // dir("client-side"){
+                //     sh 'pwd'	
+                //     sh 'yarn install'
+                // }
 
-        //         dir("server-side"){
-        //             sh 'pwd'	
-        //             sh 'yarn install'
-        //         }
+                // dir("server-side"){
+                //     sh 'pwd'	
+                //     sh 'yarn install'
+                // }
 
-        //         dir ("ml"){
-        //             sh 'pwd'
-        //             // sh 'apk add --no-cache su-exec'
-        //             sh 'apk update'
-        //             sh 'apk add python3-pip -y'
-        //             sh 'pip3 install -r requirements.txt'
-        //         }
-        //     }
-        // }
+                dir ("ml"){
+                    sh 'pwd'
+                    // sh 'apk add --no-cache su-exec'
+                    sh 'apk update'
+                    sh 'apk add py3-pip'
+                    sh 'pip3 install -r requirements.txt'
+                }
+            }
+        }
 	    // stage('Test') {
         //     steps {
         //         script {
@@ -63,12 +63,12 @@ pipeline {
                         // sh ""
                         // Run Docker container with port exposure
                         // sh "docker run -d -p 8000:5000 --name ${DOCKER_CONTAINER_NAME} ${DOCKER_IMAGE_NAME}"
-
+                        sh "pwd"
+                        sh "docker compose up ."
                         // Wait for the web app to start
                         sleep time: 30, unit: 'SECONDS'
-                        sh "docker image ls"
                         // Print Docker container logs for debugging
-                        sh "docker logs ${DOCKER_CONTAINER_NAME}"
+                        sh "docker compose logs"
                     } catch (Exception deployException) {
                         currentBuild.result = 'FAILURE'
                         throw deployException
